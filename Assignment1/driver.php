@@ -9,15 +9,20 @@ $controller->initSession();
 
 checkpoint($controller);
 
-print($controller->getHtml());
+print($controller->getTableHtml());
 
 
+printLog($controller);
+
+function printLog($controller){
+	echo '<h3>'.$controller->getLog().'</h3></br>';
+}
 function checkpoint($controller){
 	if($controller->isFatal()) crashDump($controller);
 }
 
 function crashDump($controller){
-	echo '<h3>'.$controller->getLog().'</h3></br>';
+	printLog();
 	$controller->shutdown();
 	exit;
 }
