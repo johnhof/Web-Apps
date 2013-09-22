@@ -76,6 +76,7 @@ Class FileHandler{
 
             //grab the header and store it
             $header = $tokens[0];
+            if(sizeOf($tokens)==1) continue;
 
             //retokenize based the substring
             $tokens = explode($delims, $tokens[1]);
@@ -84,6 +85,14 @@ Class FileHandler{
             foreach($tokens as $key => &$value) $rows[$header][$key] = $value;
         }
         return $rows;
+    }
+
+    function writeToFile($file, $text){
+        $handler = $this->wOpen($file);
+
+        fwrite($handler, $text);
+
+        $this->closeAll();
     }
 } 
 

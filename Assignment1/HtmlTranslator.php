@@ -16,7 +16,7 @@ class HtmlTranslator{
 			foreach($values as $value)$row=$row.$this->markupAttributes('td', $value, $cellAttributes);
 
 			//markp a form around the row, with a hidden input to mark which row it is
-			$row = $row.$this->markupAttributes('input', '', array('type'=>'hidden', 'value'=>$key));
+			$row = $row.$this->markupAttributes('input', '', array('type'=>'hidden', 'name'=>'id', 'value'=>$key));
 			$row = $this->markupAttributes('form', $row, array('action'=>MAIN_PAGE, 'method'=>'post'));
 
 			//markup the row

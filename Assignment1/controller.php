@@ -25,6 +25,7 @@ Class Controller{
 	private $scheduleFile;
 	private $schedule;
 	private $table;
+	private $currentEdit;
 
 	function __construct() {
 		$this->state = new State();
@@ -38,6 +39,7 @@ Class Controller{
 		$this->schedule = array();
 		$this->table = array();
 
+		$this->currentEdit = -1;
 		$this->html = '';
    	}
 
@@ -50,14 +52,14 @@ Class Controller{
 
 		//check the state
 		$this->checkInput();
+
 		
 		if($this->isFatal())return;
 
 		//construct the table from the data
 		$this->buildTable($this->schedule, $this->users);
 
-		if($this->isFatal())return;
-		//TODO: cookie/token setup
+		if($this->isFatal())return;	
 
 	}
 
@@ -95,18 +97,35 @@ Class Controller{
 	function getUsers(){
 		$this->users = $this->fileHandler->parseRows($this->userFile, '^', '|');
 		$this->logMsg(SUCCESS, 'users generated');
-
 	}
+
 	function getSchedule(){
 		$this->schedule = $this->fileHandler->parseRows($this->scheduleFile, '^', '|');	
 		$this->logMsg(SUCCESS, 'schedule generated');	
 	}
 
+	function updateUsers(){
+		$text='';
+//TODO: clean this up
+		foreach ($this->users as $name => $schedule) {
+			$text = $text."\n".$name.'^';
+			foreach ($schedule as $cell) {
+				$text = $text.$cell.'|';
+			}
+		}
+
+		$file = $this->fileHandler->writeToFile('users.txt',$text);
+	}
+
+	function setSchedule(){
+
+	}
+
+
 //--------  TABLE CONSTRUCTION  --------------------------------------------------------------------------------------------------------
 
 	//builds the rable from scratch
 	function buildTable($schedule,$users){
-		$this->refreshDataSet();
 		$this->refreshTable();
 	}
 
@@ -119,7 +138,12 @@ Class Controller{
 
 		//add a row for each user
 		foreach ($this->users as $name => $schedule) {
-			$row = $this->genUserRow($name, $schedule, $this->table[0]);
+			$row = array();
+
+			//if this user is being edited
+			if($this->currentEdit == sizeof($this->table)) $row = $this->userEditRow($name, $schedule, $this->table[0]);
+			else $row = $this->userDisplayRow($name, $schedule, $this->table[0]);
+			
 			array_push($this->table, $row);
 		}
 
@@ -160,8 +184,27 @@ Class Controller{
 		return $columnHeaders;
 	}
 
-	//generates a row entry for a passed in user
-	function genUserRow($name, $schedule, $columnHeaders){
+	function userEditRow($name, $schedule, $columnHeaders){
+		//offset to the second row
+		$row = array();
+
+		$row[0] = $this->translator->markupAttributes('input', '',array('type'=>'text', 'name'=>'user', 'value'=>$name));
+		$row[1] = $this->translator->markupAttributes('input','',array('type'=>'submit', 'name'=>'submit', 'value'=>'Submit'));
+
+		printArray($schedule);
+		for($count = 2; $count < sizeof($this->table[0]); $count++){
+			if(!in_array($count, $schedule)){
+				$row[$count] = $this->translator->markupAttributes('input',  '',array('type'=>'checkbox', 'name'=>$count));
+			}
+			else {
+				$row[$count] = $this->translator->markupAttributes('input',  '',array('type'=>'checkbox', 'name'=>$count, 'checked'=>'checked'));
+			}
+		}
+
+		return $row;
+	}
+
+	function userDisplayRow($name, $schedule, $columnHeaders){
 		//offset to the second row
 		$row = array();
 
@@ -169,7 +212,10 @@ Class Controller{
 		$row[0] = $name;
 
 		//set aside the next column for edit options
-		$row[1] = ' ';
+		if($this->canEdit($name)){
+			$row[1] = $this->translator->markupAttributes('input','',array('type'=>'submit', 'name'=>'edit', 'value'=>'Edit'));
+		}
+		else $row[1] = ' ';
 
 		for($column = 2; $column < sizeof($columnHeaders); $column++){// #2dimensionlswag
 			if(in_array($column, $schedule)){
@@ -178,6 +224,7 @@ Class Controller{
 			else $row[$column] = '';
 		}
 		return $row;
+
 	}
 
 	//construct and return the submit row
@@ -187,10 +234,11 @@ Class Controller{
 
 		if($this->state->isNewEntry()){
 			$textField = 'text';
-			$row[0] = $textField;
+			$row[0] = $this->translator->markupAttributes('input', '',array('type'=>'text', 'name'=>'user'));
 			$row[1] = $this->translator->markupAttributes('input','',array('type'=>'submit', 'name'=>'submit', 'value'=>'Submit'));
 
-			for($count = 2; $count < sizeof($this->table[0]); $count++) $row[$count] = 'box';
+
+			for($count = 2; $count < sizeof($this->table[0]); $count++) $row[$count] = $this->translator->markupAttributes('input',  '',array('type'=>'checkbox', 'name'=>$count));
 		}
 		else{
 			$row[0] = '';
@@ -227,23 +275,53 @@ Class Controller{
 		return $this->translator->basicTable($this->table, 'test');
 	}
 
-//--------  STATE & MESSAGE HANDLERS  --------------------------------------------------------------------------------------------------
+//--------  SPECIAL IMPUT HANDLERS  ----------------------------------------------------------------------------------------------------
 	
-	function checkInput(){
+	function checkInput(){		
 		if(isset($_POST['new'])){
 			$this->state->setNewEntry();
 			$this->refreshTable();
 		}
 		if(isset($_POST['edit'])){
-			//$this->convertToForm();
+			echo $_POST['id'];
+			$this->currentEdit = $_POST['id'];
 		}
 		if(isset($_POST['submit'])){
-			//attempt to open the user file for writing
-			$this->userFile = $this->fileHandler->wOpen('users.txt');
-			if($this->userFile == NO_LOCK) $this->logMsg(WARNING, 'User file is locked, try editing later');
+			$user = $_POST['user'];
 
+			//make sure the user doesnt already exist
+			if(array_key_exists ($user, $this->users) && !$this->canEdit($user)){
+				$this->logMsg(WARNING, 'User already exists, and you arent the creator. operation aborted');
+				return;
+			}
+			//add a cookie to store the people we edited
+			else setcookie($user, "created", time()+3600);
+
+			if($user==''){
+				$this->logMsg(WARNING, 'No user name included in the submission, operation aborted');
+				return;
+			}
+
+			//build the array
+			$schedule = array();	
+			foreach ($_POST as $key => $value) {
+				if($key != 'submit' && $key != 'user')array_push($schedule, $key);
+			}
+
+			//add/update the edited row
+			$this->users[$user] = $schedule;
+
+			$this->updateUsers();
 		}
 	}
+
+	function canEdit($user){
+		if($_COOKIE && array_key_exists($user, $_COOKIE))return true;
+		else return false;
+	}
+
+//--------  STATE & MESSAGE HANDLERS  --------------------------------------------------------------------------------------------------
+//
 	function isFatal(){
 		return $this->state->isFatal();
 	}
@@ -253,7 +331,10 @@ Class Controller{
 		$this->msgHandler->logMsg($type, $msg);
 	}
 
-	function getLog(){return $this->msgHandler->getLog();}
+	function getLog(){
+		$log = $this->msgHandler->getLog();
+		return $this->translator->markupAttributes('div', $log, array('style'=>'overflow: scroll; height: 25%; width: 100%'));
+	}
 	function lastLog(){return $this->msgHandler->last();}
 
 	//display error and return an error code
