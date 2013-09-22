@@ -21,7 +21,6 @@ Class FileHandler{
         if(file_exists($file)){ 
             $handler = fopen($file, 'r');
             if(!flock($handler,LOCK_SH )){//attempt to acquire a shared lock
-                echo 'fail';
                 fclose($handler);
                 return NO_LOCK;
             }
@@ -35,7 +34,6 @@ Class FileHandler{
         if(file_exists($file)) {
             $handler = fopen($file, 'w');
             if(!flock($handler ,LOCK_EX)){//attempt to acquire an exclusive lock
-                echo 'fail';
                 fclose($handler);
                 return NO_LOCK;
             }

@@ -43,6 +43,7 @@ Class Controller{
 		$this->html = '';
    	}
 
+   	//executes all functions to output the HTML
 	function initSession(){
 
 		//load resource files
@@ -192,13 +193,16 @@ Class Controller{
 		return $columnHeaders;
 	}
 
+	//formats the user wor for editing (dynamic) display
 	function userEditRow($name, $schedule, $columnHeaders){
 		//offset to the second row
 		$row = array();
 
+		//add the first two inputs
 		$row[0] = $this->translator->markupAttributes('input', '',array('type'=>'text', 'name'=>'user', 'value'=>$name));
 		$row[1] = $this->translator->markupAttributes('input','',array('type'=>'submit', 'name'=>'submit', 'value'=>'Submit'));
 		
+		//add a check box input for each entry, checking those that are stored that way
 		for($count = 2; $count < sizeof($this->table[0]); $count++){
 			if(!in_array($count, $schedule)){
 				$row[$count] = $this->translator->markupAttributes('input',  '',array('type'=>'checkbox', 'name'=>$count));
@@ -211,6 +215,7 @@ Class Controller{
 		return $row;
 	}
 
+	//formats teh user row for standard (static) display
 	function userDisplayRow($name, $schedule, $columnHeaders){
 		//offset to the second row
 		$row = array();
@@ -277,12 +282,14 @@ Class Controller{
 
 //--------  HTML FORMATTING  -----------------------------------------------------------------------------------------------------------
 
+	//treturns a fomrmatted dable output for the internal data
 	function getTableHtml(){
 		return $this->translator->basicTable($this->table, 'test');
 	}
 
 //--------  SPECIAL IMPUT HANDLERS  ----------------------------------------------------------------------------------------------------
 	
+	//checks post values tand handles them accordingly (generally by manipulating state)
 	function checkInput(){		
 
 		//posting new sets the state to 'newentry' for the table sonstruction to handle later
@@ -293,7 +300,6 @@ Class Controller{
 		//similar to posting new, posting edit marks the row being edited for the table construction to handle later
 		if(isset($_POST['edit'])){
 			$this->currentEdit = $_POST['id'];
-			echo '</br>'.$_POST['id'];
 		}
 		//submit constructs the form submitted and adds it to the table. it will be written to file at a later date
 		//NOTE: cookies are also set here
@@ -324,8 +330,8 @@ Class Controller{
 			}
 
 			//add/update the edited row
-			//if(array_key_exists($_POST['user'],$this->users))unset($_POST['user'],$this->users);
-			$this->users[$user] = $schedule;
+			if($_POST['row'] < sizeof($this->users)) $this->users = deleteIndex($this->users, $_POST['row']-1); //remove the row if its in teh user set
+			$this->users[$user] = $schedule; //add the row
 
 			$this->updateUsers();
 		}

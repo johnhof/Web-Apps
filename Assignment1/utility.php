@@ -83,6 +83,19 @@ Class State{
 //--------	UTILITY FUNCITONS
 //--------------------------------------------------------------------------------------------------------------------------------------
 
+
+//remove a key value pair at an index
+function deleteIndex($array, $index){
+	$i = 0;
+	foreach ($array as $key => $value) {
+		if($i == $index){
+			unset($array[$key]);
+			return $array;
+		}
+		$i++;
+	}
+}
+
 function println($string){print('</br>'.$string);}
 
 function printlnOffset($string, $offset){println($offset.$string);}
