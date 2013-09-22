@@ -4,7 +4,10 @@
   <title>PHP Test</title>
  </head>
  <body>
- <?php include 'driver.php'; ?>
+ <?php 
+ 	//NOTE: I hate HTML
+ 	include 'driver.php'; 
+ ?>
  </body>
 </html>
 

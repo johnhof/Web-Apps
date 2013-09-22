@@ -39,7 +39,7 @@ Class Controller{
 		$this->schedule = array();
 		$this->table = array();
 
-		$this->currentEdit = -1;
+		$this->currentEdit = '';
 		$this->html = '';
    	}
 
@@ -66,6 +66,7 @@ Class Controller{
 
 //--------  DATA WRAPPERS  -------------------------------------------------------------------------------------------------------------
 //NOTE: NAMING IS LEFT ABSTRACT TO MINIMIZE DISRUPTION WHEN CHANGING TO A DATABASE SOURCE 
+//
 	function LoadFiles(){
 
 		//open or create the user file
@@ -82,18 +83,21 @@ Class Controller{
 		$this->scheduleFile = $this->fileHandler->rOpen('schedule.txt');
 		if($this->userFile == NO_LOCK) $this->markFatal('Schedule file is locked, try again later');
 		else if(!$this->scheduleFile) $this->markFatal('Failed to open schedule file');
-
 	}
 
+	//wrapper to encapsulate calls
 	function refreshDataSet(){
 		$this->LoadFiles();
 
 		$this->getUsers();
 		$this->getSchedule();
 
-		$this->fileHandler->closeAll();
+		//close and free the file locks
+		$this->fileHandler->close($this->userFile);
+		$this->fileHandler->close($this->scheduleFile);
 	}
 
+	//refreshes from the downstream data source
 	function getUsers(){
 		$this->users = $this->fileHandler->parseRows($this->userFile, '^', '|');
 		$this->logMsg(SUCCESS, 'users generated');
@@ -104,6 +108,7 @@ Class Controller{
 		$this->logMsg(SUCCESS, 'schedule generated');	
 	}
 
+	//updates the downstream data source
 	function updateUsers(){
 		$text='';
 //TODO: clean this up
@@ -114,7 +119,10 @@ Class Controller{
 			}
 		}
 
-		$file = $this->fileHandler->writeToFile('users.txt',$text);
+		$returnCode = $this->fileHandler->writeToFile('users.txt',$text);
+		if($returnCode == NO_LOCK) $this->logMsg(WARNING,'User file is locked, try again later');
+		else $this->logMsg(SUCCESS, 'schedule updated, and uploaded');
+
 	}
 
 	function setSchedule(){
@@ -141,7 +149,7 @@ Class Controller{
 			$row = array();
 
 			//if this user is being edited
-			if($this->currentEdit == sizeof($this->table)) $row = $this->userEditRow($name, $schedule, $this->table[0]);
+			if($this->currentEdit == $name) $row = $this->userEditRow($name, $schedule, $this->table[0]);
 			else $row = $this->userDisplayRow($name, $schedule, $this->table[0]);
 			
 			array_push($this->table, $row);
@@ -190,8 +198,7 @@ Class Controller{
 
 		$row[0] = $this->translator->markupAttributes('input', '',array('type'=>'text', 'name'=>'user', 'value'=>$name));
 		$row[1] = $this->translator->markupAttributes('input','',array('type'=>'submit', 'name'=>'submit', 'value'=>'Submit'));
-
-		printArray($schedule);
+		
 		for($count = 2; $count < sizeof($this->table[0]); $count++){
 			if(!in_array($count, $schedule)){
 				$row[$count] = $this->translator->markupAttributes('input',  '',array('type'=>'checkbox', 'name'=>$count));
@@ -210,7 +217,6 @@ Class Controller{
 
 		//set row header
 		$row[0] = $name;
-
 		//set aside the next column for edit options
 		if($this->canEdit($name)){
 			$row[1] = $this->translator->markupAttributes('input','',array('type'=>'submit', 'name'=>'edit', 'value'=>'Edit'));
@@ -278,14 +284,19 @@ Class Controller{
 //--------  SPECIAL IMPUT HANDLERS  ----------------------------------------------------------------------------------------------------
 	
 	function checkInput(){		
+
+		//posting new sets the state to 'newentry' for the table sonstruction to handle later
 		if(isset($_POST['new'])){
 			$this->state->setNewEntry();
 			$this->refreshTable();
 		}
+		//similar to posting new, posting edit marks the row being edited for the table construction to handle later
 		if(isset($_POST['edit'])){
-			echo $_POST['id'];
 			$this->currentEdit = $_POST['id'];
+			echo '</br>'.$_POST['id'];
 		}
+		//submit constructs the form submitted and adds it to the table. it will be written to file at a later date
+		//NOTE: cookies are also set here
 		if(isset($_POST['submit'])){
 			$user = $_POST['user'];
 
@@ -295,9 +306,13 @@ Class Controller{
 				return;
 			}
 			//add a cookie to store the people we edited
-			else setcookie($user, "created", time()+3600);
-
-			if($user==''){
+			else{
+				if(array_key_exists ($user, $this->users)) $this->logMsg(SUCCESS, 'The user was overwritten');
+				setcookie($user, "created", time()+3600);
+				$_COOKIE[$user] = "created";//add a fake cookie to allow editing of the new element
+			}
+		    
+		    if($user==''){
 				$this->logMsg(WARNING, 'No user name included in the submission, operation aborted');
 				return;
 			}
@@ -309,19 +324,22 @@ Class Controller{
 			}
 
 			//add/update the edited row
+			//if(array_key_exists($_POST['user'],$this->users))unset($_POST['user'],$this->users);
 			$this->users[$user] = $schedule;
 
 			$this->updateUsers();
 		}
 	}
 
+	//checks if the current poster has a cookie for the user identified
 	function canEdit($user){
 		if($_COOKIE && array_key_exists($user, $_COOKIE))return true;
 		else return false;
 	}
 
 //--------  STATE & MESSAGE HANDLERS  --------------------------------------------------------------------------------------------------
-//
+
+	//checks if the session is marked for death
 	function isFatal(){
 		return $this->state->isFatal();
 	}
@@ -331,9 +349,10 @@ Class Controller{
 		$this->msgHandler->logMsg($type, $msg);
 	}
 
+	//returns the formatted log
 	function getLog(){
 		$log = $this->msgHandler->getLog();
-		return $this->translator->markupAttributes('div', $log, array('style'=>'overflow: scroll; height: 25%; width: 100%'));
+		return $this->translator->markupAttributes('div', $log, array('style'=>'overflow: scroll; height: 25%; width: 50%; margin: auto;'));
 	}
 	function lastLog(){return $this->msgHandler->last();}
 

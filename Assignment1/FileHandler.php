@@ -1,11 +1,6 @@
 <?php
 
 Class FileHandler{
-    private $fileCache;
-
-    function __construct(){
-        $this->fileCache = array();
-    }
 
 //--------------------------------------------------------------------------------------------------------------------------------------
 //--------  I/O HANDLERS
@@ -25,13 +20,12 @@ Class FileHandler{
     function rOpen($file){
         if(file_exists($file)){ 
             $handler = fopen($file, 'r');
-/*
-            if(flock($handler,LOCK_SH )){
+            if(!flock($handler,LOCK_SH )){//attempt to acquire a shared lock
+                echo 'fail';
                 fclose($handler);
                 return NO_LOCK;
-            }*/
+            }
             
-            array_push($this->fileCache, $handler);
             return $handler;
         }
         return null;
@@ -40,31 +34,30 @@ Class FileHandler{
     function wOpen($file){
         if(file_exists($file)) {
             $handler = fopen($file, 'w');
-            /*
-            if(!flock($handler ,LOCK_EX)){
+            if(!flock($handler ,LOCK_EX)){//attempt to acquire an exclusive lock
+                echo 'fail';
                 fclose($handler);
                 return NO_LOCK;
-            }*/
-            
-            array_push($this->fileCache, $handler);
+            }
+
             return $handler;
         }
         return null;
     }
-    function closeAll(){
-        foreach($this->fileCache as $index => $handler){
-            // /flock($handler,LOCK_UN);            
-            //fclose($handler);
-           // $this->fileCache->splice($index);
-        }
+    function close($handler){
+        flock($handler,LOCK_UN);
+        fclose($handler);
     }
 
 //--------------------------------------------------------------------------------------------------------------------------------------
 //--------  CONTENT FORMATTERS
 //--------------------------------------------------------------------------------------------------------------------------------------
 
+    //parses the data file
     function parseRows($file, $firstDelim, $delims){
         $rows=array();
+
+        if(!is_resource($file)) return '';
 
         while (!feof($file)) {
             $line = fgets($file);
@@ -87,12 +80,17 @@ Class FileHandler{
         return $rows;
     }
 
+    //writes the text to the specified file
     function writeToFile($file, $text){
         $handler = $this->wOpen($file);
 
+        //the lock must be free, and the file must exist
+        if($handler == NO_LOCK || $handler == null) return $handler;
+
         fwrite($handler, $text);
 
-        $this->closeAll();
+        $this->close($handler);
+
     }
 } 
 
