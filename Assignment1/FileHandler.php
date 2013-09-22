@@ -14,7 +14,7 @@ Class FileHandler{
         else return null;
 
         //open for read and return
-        return rOpen($file);
+        return $this->rOpen($file);
     }
 
     function rOpen($file){

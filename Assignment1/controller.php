@@ -6,6 +6,7 @@ include 'utility.php';
 
 
 define('MAIN_PAGE', 'Assignment1.php', true);
+date_default_timezone_set('America/New_York');
 
 //--------------------------------------------------------------------------------------------------------------------------------------
 //--------	CONTROLLER
@@ -250,6 +251,7 @@ Class Controller{
 
 
 			for($count = 2; $count < sizeof($this->table[0]); $count++) $row[$count] = $this->translator->markupAttributes('input',  '',array('type'=>'checkbox', 'name'=>$count));
+		
 		}
 		else{
 			$row[0] = '';
@@ -330,7 +332,7 @@ Class Controller{
 			}
 
 			//add/update the edited row
-			if($_POST['row'] < sizeof($this->users)) $this->users = deleteIndex($this->users, $_POST['row']-1); //remove the row if its in teh user set
+			if($_POST['row']-1 < sizeof($this->users)) $this->users = deleteIndex($this->users, $_POST['row']-1); //remove the row if its in teh user set
 			$this->users[$user] = $schedule; //add the row
 
 			$this->updateUsers();
