@@ -1,5 +1,6 @@
  <?php 
 include 'controller.php';
+include 'tableHandler.php';
 
 $controller = new Controller();
 
@@ -28,3 +29,5 @@ function crashDump($controller){
 	$controller->shutdown();
 	exit;
 }
+
+?>
