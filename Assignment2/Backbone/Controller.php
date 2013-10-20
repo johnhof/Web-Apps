@@ -3,9 +3,6 @@
 include_once './Backbone/Utilities/Utils.php';
 include_once './Backbone/Model.php';
 
-define('HOST', 'http'.(empty($_SERVER['HTTPS'])?'':'s').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'], true);
-date_default_timezone_set('America/New_York');
-
 //--------------------------------------------------------------------------------------------------------------------------------------
 //--------	CONTROLLER
 //--------------------------------------------------------------------------------------------------------------------------------------
@@ -51,26 +48,39 @@ Class Controller{
    }
 
 //--------  HOME FUNCTIONS  ------------------------------------------------------------------------------------------------------------
-   function handleHome($action){
+   function handleMaker($model){
       $view = new View();
 
-      if($action == 'create'){
-         $view->setType('create',[]);
+      if($model->isCreate()){
+         $result = createSchedule($model->createName(), $model->makerEmail(), $model->createTimes(), $model->createUsers());
+         $view->setType('home',[$result]);
       }
-      else if($action == 'finalize'){
-         $view->setType('finalize',[]);
+      else if($model->isFinalize()){
+         $result = finalizeSchedule();
+         $view->setType('home',[$result]);
       }
-      else if($action == 'logout'){
-         session_unset();
-         $view->setType('login',['You are now logged out']); 
+      else {
+         $action = $model->getOption();
+
+         if($action == 'create'){
+            $view->setType('create',[]);
+         }
+         else if($action == 'finalize'){
+            $view->setType('finalize',[]);
+         }
+         else if($action == 'logout'){
+            session_unset();
+            $view->setType('login',['You are now logged out']); 
+         }
+         else $view->setType('home',[]);
       }
-      else $view->setType('home',[]);
 
       return $view;
    }
 
 
 //--------  SCHEDULE FUNCTIONS  --------------------------------------------------------------------------------------------------------
+
    function viewSchedule(){
    	echo 'viewing schedule';
    }

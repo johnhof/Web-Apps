@@ -31,6 +31,12 @@ Class View{
    		else if($this->type == 'create')$this->genCreate();
    		else if($this->type == 'finalize')$this->genFinal();
    		else if($this->type == 'schedule')$this->genSchedule();
+
+         if(count($this->params) > 0 && $this->params[0]){
+            $buffer = markup('h4', $this->params[0],array('style'=>'color:red;text-align:center;'));
+            $buffer = $buffer.markup('div', $buffer,array('style'=>'height:50px;width:300px;margin:auto;'));
+            $this->append($buffer);
+         }
    	}
 
    	function displayHtml(){
@@ -54,14 +60,7 @@ Class View{
 //--------	LOGIN FUNCTIONS  -----------------------------------------------------------------------------------------------------------
 
    	function genLogin(){
-		$buffer = getHtml('login');
-   		
-   		if($this->params[0]){
-	   		$temp = '';
-	   		$temp = $temp.markup('h4', $this->params[0],array('style'=>'color:red;text-align:center;'));
-	   		$buffer = $buffer.markup('div', $temp,array('style'=>'height:50px;width:300px;margin:auto;'));
-	   	}
-   		
+		   $buffer = getHtml('login');   		
    		$this->append($buffer);
    	}
 
@@ -75,7 +74,8 @@ Class View{
 //--------	SCHEDULE FUNCTIONS  --------------------------------------------------------------------------------------------------------
 
    	function genCreate(){
-   		$this->append(markup('title','Create'));
+		$buffer = getHtml('create');
+		$this->append($buffer);
    	}
 
 

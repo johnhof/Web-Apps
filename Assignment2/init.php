@@ -22,10 +22,9 @@
 
   echo 'dropping old tables... ';
 
-  $db->dropTable('Schedule');
-  $db->dropTable('Maker_Schedule');
+  $db->dropTable('Schedules');
   $db->dropTable('Users');
-  $db->dropTable('Time');
+  $db->dropTable('Times');
 
   echo 'Success</br>';
 
@@ -36,21 +35,19 @@
   //USERS
   $db->createTable('Users',['email char(30) primary key not null',
       							          'name char(30) not null',
-      							          'password char(50) not null',
+      							          'password char(50) not null default "pwd"',
                               'maker boolean not null default false']);
   //SCHEDULE
-  $db->createTable('Schedule',['id int primary key not null',
+  $db->createTable('Schedules',['maker char(30) not null',
       							            'name char(30) not null',
-      						            	'string char(50) not null']);
-  //MAKER_SCHECULE
-  $db->createTable('Maker_Schedule',['userId int not null',
-      						                   'scheduleID int not null',
-      						                    'primary key (userId, scheduleId)']);
+                                'primary key (maker, name)']);
   //TIME
-  $db->createTable('Time',['userId char(30) not null default "default"',
-      						          'scheduleId int not null',
-      						          'dateTime char(40) not null',
-      						          'primary key (userId, scheduleId, dateTime)']);
+  $db->createTable('Times',['userEmail char(30) not null default "default"',
+      						          'makerEmail char(30) not null',
+                            'scheduleName char(30) not null',
+                            'dateTime char(30) not null',
+                            'going boolean not null default false',
+      						          'primary key (userEmail, makerEmail, scheduleName, dateTime)']);
   echo 'Success</br>';
 
 //-------- ADD TUPLES -------------------------------------------------------------------------------------------------------------------

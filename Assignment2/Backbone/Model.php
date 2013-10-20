@@ -42,8 +42,8 @@ Class Model{
    	function getPostParam($key){return $this->request-> getPostValue($key);}
 
       //SESSION wrappers
-   	function getSessionEmail(){return $this->request->getSessionValue('email');}
-   	function getSessionPwd(){return $this->request->getSessionValue('pwd');}
+   	function makerEmail(){return $this->request->getSessionValue('email');}
+   	function makerPwd(){return $this->request->getSessionValue('pwd');}
 
       //GET wrappers
    	function getEmail(){return $this->request->getQueryParam('email');}
@@ -51,12 +51,19 @@ Class Model{
       function getOption(){return $this->request->getQueryParam('option');}
    	function forgotPwd(){return $this->request->getQueryParam('forgot_password');}
    	function isSubmission(){return $this->request->isSubmission();}
+      //create parameters
+      function isCreate(){return $this->request->getQueryParam('create');}
+      function createName(){return $this->request->getQueryParam('name');}
+      function createTimes(){return $this->request->getQueryParam('times');}
+      function createUsers(){return $this->request->getQueryParam('users');}
+
+      function isFinalize(){return $this->request->getQueryParam('finalize');}
 
 //--------	LOGIN UTILITIES  -----------------------------------------------------------------------------------------------------------
 
    	function loggedIn(){
-   		if(!$this->getSessionEmail() || !$this->getSessionPwd()) return false;
-   		return validateCreds($this->getSessionEmail(), $this->getSessionPwd());
+   		if(!$this->makerEmail() || !$this->makerPwd()) return false;
+   		return validateCreds($this->makerEmail(), $this->makerPwd());
    	}
 
 
@@ -67,8 +74,8 @@ Class Model{
          return $this->view;
    	}
 
-   	function setHomeView(){
-         $this->view =  $this->controller->handleHome($this->getOption());
+   	function setMakerView(){
+         $this->view =  $this->controller->handleMaker($this);
          return $this->view;
    	}
 

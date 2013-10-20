@@ -42,5 +42,26 @@ function getHtml($request){
 			<form>
 		</div>';
 	}
+
+	if($request == 'create'){
+		return '<title>Login</title>
+		<div style="width:500px; margin:auto;"><br>
+			<h1>Enter the Required Information</h1>
+			<form>
+				<div style="width:500px; margin:auto;" align="center">
+					<h3>Schedule Name</h3>
+					<input type="text" name="name"><br><br>
+					<h3>Date and Time</h3>
+					hhmm:dd/mm/yyyy-hhmm:dd/mm/yyyy-...<br>
+					<input type="text" name="times" style="width:100%;"><br><br>
+					<h3>Users and Emails</h3>
+					name:email@domain.com-name2:email2@domain.com...<br>
+					<input type="text" name="users" style="width:100%;"><br>
+					<input type="none" name="create" value="true" style="width:100%;display: none;"><br>
+				</div>
+				<input type="submit" value="Submit" style="margin-top:25px;width:50%; margin-left:25%;">
+			<form>
+		</div>';
+	}
 }
 ?>

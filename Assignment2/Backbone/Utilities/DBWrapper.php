@@ -80,6 +80,21 @@ Class DBWrapper{
       return $this->exec($query);
    	}
 
+    //If the tuple exists, return true
+    function exists($table, $selectors){
+      $reasult = false;
+      if(func_num_args() > 2) {
+        $result = $this->simpleSelect($table, $selectors, func_get_arg(2));
+      }
+      else{
+        $result = $this->simpleSelect($table, $selectors);
+      }
+
+      print_r($result);
+
+      return $result ? ($result->num_rows != 0) : false;
+    }
+
 //-------- TABLE MANIPULATION -----------------------------------------------------------------------------------------------------------
 
    	function dropTable($table){
@@ -104,7 +119,7 @@ Class DBWrapper{
 //-------- EXECUTE ----------------------------------------------------------------------------------------------------------------------
 
    	function exec($query){
-      //println('Executing: ['.$query.']');
+      println('Executing: ['.$query.']');
       $result = $this->db->query($query);
       if(!$result){
         println("Invalid query " . $this->db->error);

@@ -16,6 +16,10 @@ define('ERROR','ERROR', true);
 define('WARNING','WARNING', true);
 define('SUCCESS','SUCCESS', true);
 
+
+define('HOST', 'http'.(empty($_SERVER['HTTPS'])?'':'s').'://'.$_SERVER['SERVER_NAME'].'/1520/Assignment2/Assignment2.php?', true);
+date_default_timezone_set('America/New_York');
+
 //--------------------------------------------------------------------------------------------------------------------------------------
 //--------	UNIVERSAL VARIABLES
 //--------------------------------------------------------------------------------------------------------------------------------------
@@ -73,6 +77,54 @@ function validateCreds($email, $pwd){
     if($result->num_rows == 0)return false;
     else return true;
 }
+   
+function createSchedule($name, $maker, $times, $users){
+	global $db;
+	$msg = 'Schedule creation failed';
+	println($name);
+	println($times);
+	println($users);
+
+	if(!$name) return $msg.': invalid name';
+
+	//create schedule
+	if($db->exists('Schedules', ['*'], 'maker="'.$maker.'" and name="'.$name.'"')) return $msg.': You already have a schedule of that name';
+
+	$db->insert('Schedules', [stringify($maker),stringify($name)]);
+
+	$msg = 'Schedule created';
+
+
+	$users = explode('-',$users);
+	//create users and times
+	foreach($users as $user){
+		$parsed = explode(':',$user);
+		if(count($parsed) > 1){
+			$userName = $parsed[0];
+			$userEmail = $parsed[1];
+
+			if($db->exists('Users', ['*'], 'email="'.$userEmail.'"')) continue;
+			$db->insert('Users', [stringify($userName),stringify($userEmail),'""','"false"']);
+		
+			//once the user exists, assign them times
+			$timesArray = explode('-',$times);
+			foreach($timesArray as $time){
+				$time = str_replace([':'], ' ', $time);
+				$values = [stringify($userEmail), stringify($maker), stringify($name), stringify($time), "false"];
+				$db->insert('Times', $values);
+			}
+
+		}
+	}
+
+	$msg = 'Table Created at url: '.HOST.'schedule='.$maker.'_'.$name;
+	return $msg;
+}
+
+function finalizeSchedule($name, $email){
+	$msg = 'Table finalization failed';
+	return $msg;
+}
 
 //--------------------------------------------------------------------------------------------------------------------------------------
 //--------	UTILITY FUNCITONS
@@ -111,4 +163,7 @@ function printArrayOff($array,$offset){
 	printlnOffset(']',$offset);
 }
 
+function stringify($string){
+	return '"'.$string.'"';
+}
 ?>
