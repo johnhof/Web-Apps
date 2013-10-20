@@ -26,7 +26,8 @@ Class Model{
 		$this->view = new View();
 		$this->currentEdit = '';
 		$this->html = '';
-		$this->request = formatRequest();
+		$this->request = new Request();
+      $this->request->format();
    }
 
 

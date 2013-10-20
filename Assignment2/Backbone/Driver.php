@@ -18,7 +18,7 @@ ini_set('sendmail_from', 'example@YourDomain.com');
 
   if($model->isMakerRequest()){
     if($model->loggedIn()){
-      $model->setHomeView();
+      $model->setMakerView();
     }
   	else {
   	  $model->setLoginView();

@@ -60,7 +60,7 @@ Class MessageHandler{
 function emailPassword($email){
 	global $db;
     $msg = 'your password is';
-    $result = $db->simpleSelect('Makers', ['password'], 'email="'.$email.'"');
+    $result = $db->simpleSelect('Users', ['password'], 'email="'.$email.'" and maker=true');
     if($result->num_rows == 0)return false;
     $pwd = mysqli_fetch_array($result)[0];
     //mail($email, 'Password Reminder', $pwd);
@@ -69,26 +69,9 @@ function emailPassword($email){
 
 function validateCreds($email, $pwd){
 	global $db;
-    $result = $db->simpleSelect('Makers', ['*'], 'email="'.$email.'" and password="'.$pwd.'"');
+    $result = $db->simpleSelect('Users', ['*'], 'email="'.$email.'" and password="'.$pwd.'" and maker=true');
     if($result->num_rows == 0)return false;
     else return true;
-}
-
-//--------------------------------------------------------------------------------------------------------------------------------------
-//--------	MODEL HELPERS
-//--------------------------------------------------------------------------------------------------------------------------------------
-
-	
-function formatRequest(){
-	$type = isset($_GET['view']) ? 'viewer' : 'maker'; 
-	$query = $_GET;
-   	$post = isset($_POST) ? $_POST : false;
-   	$session = isset($_SESSION) ? $_SESSION : false;
-    $submit = (isset($_GET['submit']));
-
-    $request = new Request($type, $query, $post, $session, $submit);
-
-    return $request;
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------------

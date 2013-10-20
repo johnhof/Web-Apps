@@ -10,13 +10,7 @@ Class Request{
 	private $post;
 	private $session;
 
-	function __construct($type, $query, $post, $session, $submit) {
-		$this->type = $type;
-		$this->query = $query;
-		$this->post = $post;
-		$this->session = $session;
-    $this->submit = $submit;
-   }
+	function __construct() {}
 
    function getType(){
   		return $this->type;
@@ -55,5 +49,16 @@ Class Request{
     function isSubmission(){
       return $this->submit;
     }
+
+
+  
+  function format(){
+    $this->type = isset($_GET['view']) ? 'viewer' : 'maker'; 
+    $this->query = $_GET;
+    $this->post = isset($_POST) ? $_POST : false;
+    $this->session = isset($_SESSION) ? $_SESSION : false;
+    $this->submit = (isset($_GET['submit']));
+  }
+
 }
 ?>
