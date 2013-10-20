@@ -1,6 +1,6 @@
 <?php
 
-include 'Helpers.php';
+include_once 'Helpers.php';
 
 //--------------------------------------------------------------------------------------------------------------------------------------
 //--------	DBWrapper
@@ -104,7 +104,7 @@ Class DBWrapper{
 //-------- EXECUTE ----------------------------------------------------------------------------------------------------------------------
 
    	function exec($query){
-      println('Executing: ['.$query.']');
+      //println('Executing: ['.$query.']');
       $result = $this->db->query($query);
       if(!$result){
         println("Invalid query " . $this->db->error);

@@ -1,6 +1,6 @@
 <?php
 
-include './Backbone/Utilities/Utils.php';
+include_once './Backbone/Utilities/Utils.php';
 
 date_default_timezone_set('America/New_York');
 
@@ -12,9 +12,6 @@ Class Model{
 	private $msgHandler;
 	private $error = false;
 
-	private $translator;
-	private $html;
-
 	private $users;
 	private $schedule;
 	private $table;
@@ -25,60 +22,62 @@ Class Model{
 	private $request;
 
 	function __construct() {
-		$this->state = new State();
-		$this->msgHandler = new MessageHandler();
-		$this->translator = new HtmlTranslator();
 		$this->controller = new Controller();
 		$this->view = new View();
 		$this->currentEdit = '';
 		$this->html = '';
-
-		$this->setRequest();
-   	}
+		$this->request = formatRequest();
+   }
 
 
 //--------	REQUEST UTILITIES  ---------------------------------------------------------------------------------------------------------
 
-   	function setRequest(){$this->request = $this->controller->formatRequest();}
+   	function setRequest($request){$this->request = $request;}
    	function getRequest(){return $this->request;}
 
-   	function isHomeRequest(){return $this->request->getType() == 'get_home' ? true : false;}
+   	function isMakerRequest(){return $this->request->getType() == 'maker' ? true : false;}
    	function hasSession(){return $this->request->getSession();}
 
    	function getPostParam($key){return $this->request-> getPostValue($key);}
 
+      //SESSION wrappers
    	function getSessionEmail(){return $this->request->getSessionValue('email');}
    	function getSessionPwd(){return $this->request->getSessionValue('pwd');}
 
-   	function getPostEmail(){return $this->request->getPostValue('email');}
-   	function getPostPwd(){return $this->request->getPostValue('pwd');}
-
-   	function forgotPwd(){return $this->request->getPostValue('forgot_password');}
-
-   	function isNewSession(){return $this->request->getSession();}
+      //GET wrappers
+   	function getEmail(){return $this->request->getQueryParam('email');}
+      function getPwd(){return $this->request->getQueryParam('pwd');}
+      function getOption(){return $this->request->getQueryParam('option');}
+   	function forgotPwd(){return $this->request->getQueryParam('forgot_password');}
+   	function isSubmission(){return $this->request->isSubmission();}
 
 //--------	LOGIN UTILITIES  -----------------------------------------------------------------------------------------------------------
 
    	function loggedIn(){
    		if(!$this->getSessionEmail() || !$this->getSessionPwd()) return false;
-   		return $this->controller->validateCreds($this->getSessionEmail(), $this->getSessionPwd());
+   		return validateCreds($this->getSessionEmail(), $this->getSessionPwd());
    	}
 
 
 //--------	VIEW UTILITIES  ------------------------------------------------------------------------------------------------------------
 
    	function setLoginView(){
-   		$view = $this->controller->handleLogin($this->hasSession(), $this->getPostEmail(), 
-   												$this->getPostPwd(), $this->forgotPwd());
+   		$this->view = $this->controller->handleLogin($this->isSubmission(), $this->getEmail(), $this->getPwd(), $this->forgotPwd());
+         return $this->view;
    	}
 
    	function setHomeView(){
-
+         $this->view =  $this->controller->handleHome($this->getOption());
+         return $this->view;
    	}
 
    	function setScheduleView(){
 
    	}
+
+      function getView(){
+         return $this->view;
+      }
 }
 
 ?>

@@ -8,7 +8,7 @@
   //Initializes the database used by this phase of the project
   //
   //NOTE: I hate HTML
-  include_once 'DBWrapper.php'; 
+  include_once './Backbone/Utilities/DBWrapper.php'; 
 
   echo 'Connecting to database... ';
 
@@ -62,22 +62,22 @@
   //MAKERS
   $values = array();
 
-  $values['email'] = "'jmh162_maker1@pitt.edu'";
+  $values['email'] = "'jmh162+maker1@pitt.edu'";
   $values['name'] = "'John'";
   $values['password'] = "'pwd'";
   $db->insertPairs('Makers', $values);
 
-  $values['email'] = "'jmh162_maker2@pitt.edu'";
+  $values['email'] = "'jmh162+maker2@pitt.edu'";
   $values['name'] = "'Dan'";
   $values['password'] = "'pwd'";
   $db->insertPairs('Makers', $values);
 
-  $values['email'] = "'jmh162_maker3@pitt.edu'";
+  $values['email'] = "'jmh162+maker3@pitt.edu'";
   $values['name'] = "'Mike'";
   $values['password'] = "'pwd'";
   $db->insertPairs('Makers', $values);
 
-  $values['email'] = "'jmh162_maker4@pitt.edu'";
+  $values['email'] = "'jmh162+maker4@pitt.edu'";
   $values['name'] = "'Sam'";
   $values['password'] = "'pwd'";
   $db->insertPairs('Makers', $values);

@@ -1,14 +1,12 @@
 <?php
 
-class HtmlTranslator{
-
 //--------------------------------------------------------------------------------------------------------------------------------------
 //--------	ELEMENT SPECIFIC FORMATTERS
 //--------------------------------------------------------------------------------------------------------------------------------------
 
 	//transforms table to HTML, assuming it is a scheduling table
-	function basicTable($table){return $this->table($table, array('border' => '1','align'=>'center','cellpadding'=>'4'), array('align'=>'center'));}
-	function table($table, $attributes, $cellAttributes){
+	function genbasicTable($table){return $this->table($table, array('border' => '1','align'=>'center','cellpadding'=>'4'), array('align'=>'center'));}
+	function gentable($table, $attributes, $cellAttributes){
 		$html = '';
 		foreach ($table as $key=>$values) {
 			$row = '';
@@ -35,13 +33,13 @@ class HtmlTranslator{
 		return $this->markupAttributes('table',$html, $attributes);
 	}
 
-	function form($formAttrs, $inputAttrs){
-		$html = $this->markupAttributes('input','', $inputAttrs);
-		$html = $this->markupAttributes('form', $html, $formAttrs);
+	function genform($formAttrs, $inputAttrs){
+		$html = markupAttributes('input','', $inputAttrs);
+		$html = markupAttributes('form', $html, $formAttrs);
 		return $html;
 	}
 
-	function link($link, $text){
+	function genlink($link, $text){
 		$href = array();
 		$href['href'] = $link;
 		$this->markupAttributes('a', $text, $href);
@@ -53,6 +51,7 @@ class HtmlTranslator{
 
 	//both of these convert a string tag and string data into HTML
 	function markup($tag, $string){
+		if(func_num_args() > 2) return markupAttributes($tag, $string, func_get_arg(2));
 		return '<'.$tag.'>'.$string.'</'.$tag.'>';
 	}
 	//allows for an array of attribute to value mappings
@@ -68,5 +67,4 @@ class HtmlTranslator{
 
 		return $startTag.$string.$endTag;
 	}
-}
 ?>

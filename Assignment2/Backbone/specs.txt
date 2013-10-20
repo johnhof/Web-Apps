@@ -1,0 +1,19 @@
+
+3)    Session variables should be used to keep track of logged in makers.  Once logged in, makers will have the following options:
+	a)     Create a new schedule.  When selected, the script(s) will enable the maker to do the following:
+		i)      Enter the name of the schedule
+		ii)    Enter a list of dates / times for the schedule in some intuitive way
+		iii)   Enter a list of names and email addresses (these will be the users of the schedule – note that all users of the site do NOT have to have accounts – only makers (who will generate schedules) need accounts).
+		iv)   Submit the schedule, after which a link to the site will be emailed to the list of addresses that were entered for that schedule.  Each new instance of a schedule will have an identifier to distinguish it from other instances.  This identifier will be embedded in the link (i.e. using GET) that is sent to the email recipients of the schedule.  Also embedded in the link will be an identifier to indicate the person that the link is being sent to.  Both of these identifiers will be used by the site to retrieve the information required for that schedule.  The idea is that when a user receives the email and clicks on the link the two identifiers in the URL will uniquely identify the schedule and user who will be accessing it.
+	b)     Finalize a schedule.  For this option the maker will select an already existent schedule from his / her list of schedules.  Finalizing the schedule will do the following:
+		i)      Count the number of users who have selected each available slot, and determine the slot with the greatest number of available users.  If there is a tie you may break it in an arbitrary way.
+		ii)    Send an email to the list of users for the schedule indicating the chosen slot (date and time, nicely formatted).
+	c)     Log out.  This should close any sessions accessed by the maker and after logging out a refresh of any previous pages will result in the login page.
+4)    Users who receive links to schedules do not have to log in – the links should connect them to the site with the appropriate schedule directly.  The format of the schedule shown should be the same / similar to that of Assignment 1 with the following modifications:
+	a)     When a user connects via the link the schedule is shown with all of the user names on the rows.  The names are not editable by the users. The remaining information on a given row is editable by one user only. For users other than the current user that have not yet entered any information, the entries will be blank. The identifiers assigned to a user (and put into the URL) should identify the schedule and user, and should correlate with the appropriate row in the schedule.
+	b)     As long as the user accesses the site using the appropriate link, he / she should be able to edit and submit the entry from any browser or machine – a cookie is no longer needed to identify the user.  However, only one entry is editable per user (accessing from the emailed link).
+
+ 
+DONE - 1)    user accounts
+DONE - 2)    login
+DONE - 5)	 database

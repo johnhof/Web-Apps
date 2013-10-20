@@ -16,9 +16,6 @@ define('ERROR','ERROR', true);
 define('WARNING','WARNING', true);
 define('SUCCESS','SUCCESS', true);
 
-define('MAIN_PAGE', 'Assignment1.php', true);
-define('HOST', 'http'.(empty($_SERVER['HTTPS'])?'':'s').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'], true);
-
 //--------------------------------------------------------------------------------------------------------------------------------------
 //--------	MESSAGE HANDLER
 //--------------------------------------------------------------------------------------------------------------------------------------

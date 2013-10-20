@@ -10,11 +10,12 @@ Class Request{
 	private $post;
 	private $session;
 
-	function __construct($type, $query, $post, $session) {
+	function __construct($type, $query, $post, $session, $submit) {
 		$this->type = $type;
 		$this->query = $query;
 		$this->post = $post;
 		$this->session = $session;
+    $this->submit = $submit;
    }
 
    function getType(){
@@ -27,7 +28,7 @@ Class Request{
   	}
 
   	function getQueryParam($key){
-      if(!$this->query) return false;
+      if(!$this->query || !isset($this->query[$key])) return false;
   		return $this->query[$key];
   	}
 
@@ -37,7 +38,7 @@ Class Request{
   	}
 
   	function getPostValue($key){
-      if(!$this->post) return false;
+      if(!$this->post || !isset($this->post[$key])) return false;
   		return $this->post[$key];
   	}
 
@@ -47,8 +48,12 @@ Class Request{
   	}
 
   	function getSessionValue($key){
-      if(!$this->session) return false;
+      if(!$this->session || !isset($this->session[$key])) return false;
   		return $this->session[$key];
   	}
+
+    function isSubmission(){
+      return $this->submit;
+    }
 }
 ?>

@@ -17,6 +17,12 @@ define('WARNING','WARNING', true);
 define('SUCCESS','SUCCESS', true);
 
 //--------------------------------------------------------------------------------------------------------------------------------------
+//--------	UNIVERSAL VARIABLES
+//--------------------------------------------------------------------------------------------------------------------------------------
+
+$db = new DBWrapper('localhost', 'root', '', 'mysql');
+
+//--------------------------------------------------------------------------------------------------------------------------------------
 //--------	MESSAGE HANDLER
 //--------------------------------------------------------------------------------------------------------------------------------------
 
@@ -45,38 +51,44 @@ Class MessageHandler{
 	}
 }
 
+
+
 //--------------------------------------------------------------------------------------------------------------------------------------
-//--------	STATE
+//--------	CONTROLLER HELPERS
 //--------------------------------------------------------------------------------------------------------------------------------------
 
-Class State{
-	//initialize state to read
-  	private $state = READ;
+function emailPassword($email){
+	global $db;
+    $msg = 'your password is';
+    $result = $db->simpleSelect('Makers', ['password'], 'email="'.$email.'"');
+    if($result->num_rows == 0)return false;
+    $pwd = mysqli_fetch_array($result)[0];
+    //mail($email, 'Password Reminder', $pwd);
+    return true;
+}
 
- 	//returns true if the state is readonly
-  	function isRead(){return ($this->state==READ ? true : false );}
+function validateCreds($email, $pwd){
+	global $db;
+    $result = $db->simpleSelect('Makers', ['*'], 'email="'.$email.'" and password="'.$pwd.'"');
+    if($result->num_rows == 0)return false;
+    else return true;
+}
 
-  	//returns true if the state allows writing
-  	function isEdit(){return ($this->state==EDIT ? true : false );}
+//--------------------------------------------------------------------------------------------------------------------------------------
+//--------	MODEL HELPERS
+//--------------------------------------------------------------------------------------------------------------------------------------
 
-  	function setNewEntry(){$this->state=NEW_LN;}
+	
+function formatRequest(){
+	$type = isset($_GET['view']) ? 'viewer' : 'maker'; 
+	$query = $_GET;
+   	$post = isset($_POST) ? $_POST : false;
+   	$session = isset($_SESSION) ? $_SESSION : false;
+    $submit = (isset($_GET['submit']));
 
-  	function isNewEntry(){return ($this->state == NEW_LN ? true : false );}
+    $request = new Request($type, $query, $post, $session, $submit);
 
-
-  	//returns true if the session is marked for death
-  	function isFatal(){return ($this->state==FATAL ? true : false );}  	
-
-  	//mark the session for death
-  	function markFatal(){$this->state=FATAL;}
-
-  	//return state entered
-  	function enterState($reqState){
-
-  		//TODO: enter write if the file isnt locked, and lock the file
-  		
-  		return false;
-  	}
+    return $request;
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------------
