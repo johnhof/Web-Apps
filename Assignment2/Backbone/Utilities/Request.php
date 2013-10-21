@@ -53,7 +53,7 @@ Class Request{
 
   
   function format(){
-    $this->type = isset($_GET['view']) ? 'viewer' : 'maker'; 
+    $this->type = isset($_GET['schedule']) ? 'viewer' : 'maker'; 
     $this->query = $_GET;
     $this->post = isset($_POST) ? $_POST : false;
     $this->session = isset($_SESSION) ? $_SESSION : false;

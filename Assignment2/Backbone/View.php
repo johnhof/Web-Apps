@@ -83,6 +83,24 @@ Class View{
 
    	function genFinal(){
    		$this->append(markup('title','Finalize'));
+         $this->append(markup('h1','Select a Schedule to Finalize',array('align'=>'center', 'style'=>'margin-top:50px;')));
+         $buffer = '';
+         foreach($this->params[1] as $schedule){
+
+            $link = $this->params[2][$schedule];
+            $link = markup('a', 'View', array('href'=>$link));
+
+            $text = 'Name: '.$schedule.' ('.$link.')';
+
+            $button = markup('input', $text, array('type'=>'radio', 'name'=>'makeFinal', 'value'=>$schedule, 'style'=>'margin-bottom:25px;'));
+            $buffer = $buffer.$button.'</br>';
+         }
+
+         $buffer = $buffer.markup('input', '', array('type'=>'submit', 'value'=>'Finalize', 'style'=>'width:100px; margin-left:100;'));
+         $buffer = markup('div', $buffer, array('style' => 'width:300px; margin:auto;'));
+         $buffer = markup('h3', $buffer);
+         $this->append($buffer);
+
    	}
 
 
@@ -90,6 +108,9 @@ Class View{
 
    	function genSchedule(){
    		$this->append(markup('title','Schedule'));
+         $this->append(markup('h2',$this->params['title'],array('align'=>'center')));
+         $this->append($this->params['table']);
+         $this->append($this->params[0]);
    	}
 
 

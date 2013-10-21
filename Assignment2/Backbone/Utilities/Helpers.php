@@ -1,5 +1,6 @@
 <?php
 
+include('Schedule.php');
 
 //--------------------------------------------------------------------------------------------------------------------------------------
 //--------	UNIVERSAL DEFINES
@@ -91,6 +92,7 @@ function createSchedule($name, $maker, $times, $users){
 	if($db->exists('Schedules', ['*'], 'maker="'.$maker.'" and name="'.$name.'"')) return $msg.': You already have a schedule of that name';
 
 	$db->insert('Schedules', [stringify($maker),stringify($name)]);
+	$scheduleId = 'schedule='.$maker.'_'.$name;
 
 	$msg = 'Schedule created';
 
@@ -105,7 +107,16 @@ function createSchedule($name, $maker, $times, $users){
 
 			if($db->exists('Users', ['*'], 'email="'.$userEmail.'"')) continue;
 			$db->insert('Users', [stringify($userName),stringify($userEmail),'""','"false"']);
-		
+			
+			//email links
+			$queryStr = $scheduleId.'&viewer='.$userEmail;
+			$userLink = HOST.$queryStr;
+			println($userLink);
+			//
+			//
+			//TODO: Email users their links
+			//
+			//				
 			//once the user exists, assign them times
 			$timesArray = explode('-',$times);
 			foreach($timesArray as $time){
@@ -117,13 +128,84 @@ function createSchedule($name, $maker, $times, $users){
 		}
 	}
 
-	$msg = 'Table Created at url: '.HOST.'schedule='.$maker.'_'.$name;
+	$msg = 'Table Created at url: '.HOST.$scheduleId;
 	return $msg;
 }
 
-function finalizeSchedule($name, $email){
-	$msg = 'Table finalization failed';
-	return $msg;
+function getSchedule($schedule, $viewer, $inEdit){
+	global $db;
+
+
+	$params = explode('_',$schedule);
+
+	if(count($params) < 2) return false;
+
+	
+	$maker = str_replace(' ', '+', $params[0]); 
+	$schedule = $params[1];
+
+	//build the basic schedule
+	$scheduleObj = new Schedule($schedule);
+	$scheduleObj->setCurrentUser($viewer);
+	$scheduleObj->setInEdit($inEdit);
+
+	//get the times for the schedule
+	$times = $db->distinctSelect('Times', ['dateTime'], 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'"');
+	if(!$times) return $msg;
+	$times = mysqli_fetch_all($times);
+
+	//get the users for the schedule
+	$users = $db->distinctSelect('Times', ['userEmail'], 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'"');
+	if(!$users) return $msg;
+	$users = mysqli_fetch_all($users);
+
+	foreach($times as $time){
+		//query results are nested by row
+		$time = $time[0];
+
+		//attempt to add time
+		$scheduleObj->addTime($time);
+
+		foreach($users as $user){
+			//query results are nested by row
+			$user = $user[0];
+
+			//attempt to add user
+			$scheduleObj->addUser($user);
+
+			$value = $db->distinctSelect('Times', ['going'], 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'" and userEmail="'.$user.'"');
+			if(is_bool($value)){
+				$scheduleObj->setUserTime($user, $time, $value);
+			}
+		}
+	}
+	
+	return $scheduleObj->getHtml();
+
+
+}
+
+function finalizeSchedule($email){
+	global $db;
+	$msg = 'Schedule finalization failed';	
+	$result = [];
+
+	$tables = $db->simpleSelect('schedules', ['name'], 'maker="'.$email.'"');
+	if(!$tables) return 'No schedules owned';
+	$tables = mysqli_fetch_all($tables);
+
+	$result[1] = array();
+	$result[2] = array();
+	foreach($tables as $table){
+		//stash each table name and url
+		array_push($result[1],$table[0]);
+
+		$link = HOST.'schedule='.$email.'_'.$table[0];
+		$result[2][$table[0]] = $link;
+	}
+
+	$result[0]='';
+	return $result;
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------------

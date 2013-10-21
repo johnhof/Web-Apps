@@ -80,6 +80,23 @@ Class DBWrapper{
       return $this->exec($query);
    	}
 
+    function distinctSelect($table, $selectors){
+      $firstSelector = true;
+      $query = 'select distinct ';
+
+      foreach ($selectors as $selector){
+        ($firstSelector) ? $firstSelector=false : $query = $query.', ';
+        $query = $query.' '.$selector;
+      } 
+
+      $query = $query.' from '.$table;
+      
+      if(func_num_args() > 2) {
+        $query = $query.' where '.func_get_arg(2);
+      }
+      return $this->exec($query);
+    }
+
     //If the tuple exists, return true
     function exists($table, $selectors){
       $reasult = false;
@@ -89,9 +106,6 @@ Class DBWrapper{
       else{
         $result = $this->simpleSelect($table, $selectors);
       }
-
-      print_r($result);
-
       return $result ? ($result->num_rows != 0) : false;
     }
 
@@ -119,10 +133,10 @@ Class DBWrapper{
 //-------- EXECUTE ----------------------------------------------------------------------------------------------------------------------
 
    	function exec($query){
-      println('Executing: ['.$query.']');
+      //println('Executing: ['.$query.']');
       $result = $this->db->query($query);
       if(!$result){
-        println("Invalid query " . $this->db->error);
+        //println("Invalid query " . $this->db->error);
         return false;
       } else {
       	return $result;

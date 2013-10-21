@@ -56,8 +56,12 @@ Class Model{
       function createName(){return $this->request->getQueryParam('name');}
       function createTimes(){return $this->request->getQueryParam('times');}
       function createUsers(){return $this->request->getQueryParam('users');}
+      //view parameters
+      function viewSchedule(){return $this->request->getQueryParam('schedule');}
+      function viewer(){return $this->request->getQueryParam('viewer');}
+      function viewEdit(){return [];}
 
-      function isFinalize(){return $this->request->getQueryParam('finalize');}
+      function isFinalize(){return $this->request->getQueryParam('option') == 'finalize';}
 
 //--------	LOGIN UTILITIES  -----------------------------------------------------------------------------------------------------------
 
@@ -80,7 +84,8 @@ Class Model{
    	}
 
    	function setScheduleView(){
-
+         $this->view =  $this->controller->handleView($this);
+         return $this->view;
    	}
 
       function getView(){

@@ -56,8 +56,8 @@ Class Controller{
          $view->setType('home',[$result]);
       }
       else if($model->isFinalize()){
-         $result = finalizeSchedule();
-         $view->setType('home',[$result]);
+         $result = finalizeSchedule($model->makerEmail());
+         $view->setType('finalize',$result);
       }
       else {
          $action = $model->getOption();
@@ -81,8 +81,13 @@ Class Controller{
 
 //--------  SCHEDULE FUNCTIONS  --------------------------------------------------------------------------------------------------------
 
-   function viewSchedule(){
-   	echo 'viewing schedule';
+   function handleView($model){
+      $view = new View();
+      $result = getSchedule($model->viewSchedule(),$model->viewer(),$model->viewEdit());
+
+      $view->setType('schedule',$result);
+
+      return $view;  
    }
 }
 
