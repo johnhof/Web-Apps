@@ -136,7 +136,7 @@ Class DBWrapper{
       //println('Executing: ['.$query.']');
       $result = $this->db->query($query);
       if(!$result){
-        //println("Invalid query " . $this->db->error);
+        println("Invalid query " . $this->db->error);
         return false;
       } else {
       	return $result;

@@ -35,6 +35,10 @@ Class Request{
       if(!$this->post || !isset($this->post[$key])) return false;
   		return $this->post[$key];
   	}
+    function getPostValues(){
+      if(!$this->post) return false;
+      return $this->post;
+    }
 
   	function getSession(){
       if(!$this->session) return false;

@@ -31,7 +31,7 @@ Class View{
    		else if($this->type == 'create')$this->genCreate();
    		else if($this->type == 'finalize')$this->genFinal();
    		else if($this->type == 'schedule')$this->genSchedule();
-
+         
          if(count($this->params) > 0 && $this->params[0]){
             $buffer = markup('h4', $this->params[0],array('style'=>'color:red;text-align:center;'));
             $buffer = $buffer.markup('div', $buffer,array('style'=>'height:50px;width:300px;margin:auto;'));
@@ -96,8 +96,8 @@ Class View{
             $buffer = $buffer.$button.'</br>';
          }
 
-         $buffer = $buffer.markup('input', '', array('type'=>'submit', 'value'=>'Finalize', 'style'=>'width:100px; margin-left:100;'));
-         $buffer = markup('div', $buffer, array('style' => 'width:300px; margin:auto;'));
+         $buffer = $buffer.markup('input', '', array('type'=>'submit', 'name'=>'finalize','value'=>'Finalize', 'style'=>'width:100px; margin-left:100;'));
+         $buffer = markup('form', $buffer, array('style' => 'width:300px; margin:auto;'));
          $buffer = markup('h3', $buffer);
          $this->append($buffer);
 
@@ -108,9 +108,11 @@ Class View{
 
    	function genSchedule(){
    		$this->append(markup('title','Schedule'));
-         $this->append(markup('h2',$this->params['title'],array('align'=>'center')));
-         $this->append($this->params['table']);
-         $this->append($this->params[0]);
+         if(isset($this->params['title']) && isset($this->params['table'])){
+            $this->append(markup('h2',$this->params['title'],array('align'=>'center')));
+            $this->append($this->params['table']);
+            $this->append($this->params[0]);
+         }
    	}
 
 

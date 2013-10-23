@@ -68,6 +68,7 @@ function emailPassword($email){
     $result = $db->simpleSelect('Users', ['password'], 'email="'.$email.'" and maker=true');
     if($result->num_rows == 0)return false;
     $pwd = mysqli_fetch_array($result)[0];
+    //TODO:email
     //mail($email, 'Password Reminder', $pwd);
     return true;
 }
@@ -137,15 +138,16 @@ function getSchedule($schedule, $viewer, $inEdit){
 
 
 	$params = explode('_',$schedule);
-
 	if(count($params) < 2) return false;
 
 	
 	$maker = str_replace(' ', '+', $params[0]); 
 	$schedule = $params[1];
 
+	if(!$db->exists('Schedules', ['*'], 'maker="'.$maker.'" and name="'.$schedule.'"')) return ['No such schedule'];
+
 	//build the basic schedule
-	$scheduleObj = new Schedule($schedule);
+	$scheduleObj = new Schedule($schedule, $maker);
 	$scheduleObj->setCurrentUser($viewer);
 	$scheduleObj->setInEdit($inEdit);
 
@@ -173,9 +175,12 @@ function getSchedule($schedule, $viewer, $inEdit){
 			//attempt to add user
 			$scheduleObj->addUser($user);
 
-			$value = $db->distinctSelect('Times', ['going'], 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'" and userEmail="'.$user.'"');
-			if(is_bool($value)){
-				$scheduleObj->setUserTime($user, $time, $value);
+			$result = $db->simpleSelect('Times', ['going'], 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'" and dateTime="'.$time.'" and userEmail="'.$user.'"');
+
+			if($result && $result->num_rows == 1){
+				$result = mysqli_fetch_array($result)[0];
+				$result == 0 ? true: false;
+				$scheduleObj->setUserTime($user, $time, $result);
 			}
 		}
 	}
@@ -207,6 +212,88 @@ function finalizeSchedule($email){
 	$result[0]='';
 	return $result;
 }
+
+function submitEntries($scheduleId, $viewer, $values){
+	global $db;
+
+	$params = explode('_',$scheduleId);
+	if(count($params) < 2) return false;
+
+	$maker = str_replace(' ', '+', $params[0]); 
+	$schedule = $params[1];
+
+
+	//get all times for this  table
+	$result = $db->simpleSelect('Times', ['dateTime'], 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'" and userEmail="'.$viewer.'"');
+
+	if($result && $result->num_rows != 0){
+		$times = [];
+		while ($time = mysqli_fetch_array($result)){
+			array_push($times, $time[0]);
+		}
+
+		//for all times
+		foreach($times as $time){
+			if(in_array($time, $values)){
+				$db->exec('Update Times Set going=true Where makerEmail="'.$maker.'" and scheduleName="'.$schedule.'" and dateTime="'.$time.'" and userEmail="'.$viewer.'"');
+				println('setting '.$viewer.':'.$time.' to true');	
+			}
+			else{
+				println('setting '.$viewer.':'.$time.' to false');
+				$db->exec('Update Times Set going=false Where makerEmail="'.$maker.'" and scheduleName="'.$schedule.'" and dateTime="'.$time.'" and userEmail="'.$viewer.'"');	
+			}
+		}
+	}
+}
+
+function finalize($schedule, $maker){
+	global $db;
+	$msg = 'failed to create schedule';
+	$return = array(0=>$msg);
+
+	//get all times for this table
+	$result = $db->distinctSelect('Times', ['dateTime'], 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'"');
+
+	if($result && $result->num_rows != 0){
+		$times = [];
+		while ($time = mysqli_fetch_array($result)){
+			array_push($times, $time[0]);
+		}
+
+		$timeChosen = '';
+		$max = -1;
+		foreach ($times as $time){
+			//get the list of users going at the current time
+			$result = $db->simpleSelect('Times', ['*'], 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'" and datetime="'.$time.'" and going='.true);
+
+			//if its the new max count, store it
+			if($result->num_rows > $max){
+				$max = $result->num_rows;
+				$timeChosen = $time;
+			}
+		}
+
+		//get all times for this table
+		$result = $db->distinctSelect('Times', ['userEmail'], 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'"');
+		if($result && $result->num_rows != 0){
+			$users = [];
+			while ($user = mysqli_fetch_array($result)){
+				array_push($users, $user[0]);
+			}
+			$msg = 'Time selected: '.$timeChosen;
+			$msg = $msg.'<br>Emailing users: '; 
+			foreach($users as $user){
+				$msg = $msg.$user.'; ';
+				//TODO: email!!!
+			}
+		}
+	}
+
+	$return[0]=$msg;
+	return $return;
+
+}
+
 
 //--------------------------------------------------------------------------------------------------------------------------------------
 //--------	UTILITY FUNCITONS

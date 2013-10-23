@@ -51,6 +51,12 @@ Class Controller{
    function handleMaker($model){
       $view = new View();
 
+      if($model->finalize()) {
+         $result = finalize($model->finalShcedule(), $model->makerEmail());
+         $view->setType('home',$result);
+         return $view;
+      }
+
       if($model->isCreate()){
          $result = createSchedule($model->createName(), $model->makerEmail(), $model->createTimes(), $model->createUsers());
          $view->setType('home',[$result]);
@@ -83,11 +89,16 @@ Class Controller{
 
    function handleView($model){
       $view = new View();
+
       $result = getSchedule($model->viewSchedule(),$model->viewer(),$model->viewEdit());
 
       $view->setType('schedule',$result);
 
       return $view;  
+   }
+
+   function handleSubmit($model){
+      $result = submitEntries($model->viewSchedule(), $model->viewer(), $model->submitValues());
    }
 }
 

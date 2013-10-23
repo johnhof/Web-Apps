@@ -59,9 +59,13 @@ Class Model{
       //view parameters
       function viewSchedule(){return $this->request->getQueryParam('schedule');}
       function viewer(){return $this->request->getQueryParam('viewer');}
-      function viewEdit(){return [];}
-
+      function viewEdit(){return $this->request->getQueryParam('edit');}
+      function viewSubmit(){return $this->request->getQueryParam('submit');}
+      function submitValues(){return $this->request->getPostValues();}
+      //view finalize
       function isFinalize(){return $this->request->getQueryParam('option') == 'finalize';}
+      function finalShcedule(){return $this->request->getQueryParam('makeFinal');}
+      function finalize(){return $this->request->getQueryParam('finalize') == 'Finalize';}
 
 //--------	LOGIN UTILITIES  -----------------------------------------------------------------------------------------------------------
 
@@ -84,6 +88,7 @@ Class Model{
    	}
 
    	function setScheduleView(){
+         if($this->viewSubmit() && $this->submitValues()) $this->controller->handleSubmit($this);
          $this->view =  $this->controller->handleView($this);
          return $this->view;
    	}
