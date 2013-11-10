@@ -1,0 +1,80 @@
+[10-Nov-2013 17:49:41 America/New_York] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, boolean given in C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php on line 48
+[10-Nov-2013 17:49:41 America/New_York] PHP Stack trace:
+[10-Nov-2013 17:49:41 America/New_York] PHP   1. {main}() C:\wamp\www\1520\Assignment3\init.php:0
+[10-Nov-2013 17:49:41 America/New_York] PHP   2. query() C:\wamp\www\1520\Assignment3\init.php:14
+[10-Nov-2013 17:49:41 America/New_York] PHP   3. mysqli_fetch_array() C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php:48
+[10-Nov-2013 17:50:23 America/New_York] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, boolean given in C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php on line 48
+[10-Nov-2013 17:50:23 America/New_York] PHP Stack trace:
+[10-Nov-2013 17:50:23 America/New_York] PHP   1. {main}() C:\wamp\www\1520\Assignment3\init.php:0
+[10-Nov-2013 17:50:23 America/New_York] PHP   2. query() C:\wamp\www\1520\Assignment3\init.php:23
+[10-Nov-2013 17:50:23 America/New_York] PHP   3. mysqli_fetch_array() C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php:48
+[10-Nov-2013 17:50:23 America/New_York] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, boolean given in C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php on line 48
+[10-Nov-2013 17:50:23 America/New_York] PHP Stack trace:
+[10-Nov-2013 17:50:23 America/New_York] PHP   1. {main}() C:\wamp\www\1520\Assignment3\init.php:0
+[10-Nov-2013 17:50:23 America/New_York] PHP   2. query() C:\wamp\www\1520\Assignment3\init.php:31
+[10-Nov-2013 17:50:23 America/New_York] PHP   3. mysqli_fetch_array() C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php:48
+[10-Nov-2013 17:53:38 America/New_York] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, boolean given in C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php on line 48
+[10-Nov-2013 17:53:38 America/New_York] PHP Stack trace:
+[10-Nov-2013 17:53:38 America/New_York] PHP   1. {main}() C:\wamp\www\1520\Assignment3\init.php:0
+[10-Nov-2013 17:53:38 America/New_York] PHP   2. query() C:\wamp\www\1520\Assignment3\init.php:14
+[10-Nov-2013 17:53:38 America/New_York] PHP   3. mysqli_fetch_array() C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php:48
+[10-Nov-2013 17:53:38 America/New_York] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, boolean given in C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php on line 48
+[10-Nov-2013 17:53:38 America/New_York] PHP Stack trace:
+[10-Nov-2013 17:53:38 America/New_York] PHP   1. {main}() C:\wamp\www\1520\Assignment3\init.php:0
+[10-Nov-2013 17:53:38 America/New_York] PHP   2. query() C:\wamp\www\1520\Assignment3\init.php:23
+[10-Nov-2013 17:53:38 America/New_York] PHP   3. mysqli_fetch_array() C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php:48
+[10-Nov-2013 17:53:38 America/New_York] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, boolean given in C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php on line 48
+[10-Nov-2013 17:53:38 America/New_York] PHP Stack trace:
+[10-Nov-2013 17:53:38 America/New_York] PHP   1. {main}() C:\wamp\www\1520\Assignment3\init.php:0
+[10-Nov-2013 17:53:38 America/New_York] PHP   2. query() C:\wamp\www\1520\Assignment3\init.php:31
+[10-Nov-2013 17:53:38 America/New_York] PHP   3. mysqli_fetch_array() C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php:48
+[10-Nov-2013 18:03:28 America/New_York] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, boolean given in C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php on line 48
+[10-Nov-2013 18:03:28 America/New_York] PHP Stack trace:
+[10-Nov-2013 18:03:28 America/New_York] PHP   1. {main}() C:\wamp\www\1520\Assignment3\init.php:0
+[10-Nov-2013 18:03:28 America/New_York] PHP   2. query() C:\wamp\www\1520\Assignment3\init.php:14
+[10-Nov-2013 18:03:28 America/New_York] PHP   3. mysqli_fetch_array() C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php:48
+[10-Nov-2013 18:03:28 America/New_York] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, boolean given in C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php on line 48
+[10-Nov-2013 18:03:28 America/New_York] PHP Stack trace:
+[10-Nov-2013 18:03:28 America/New_York] PHP   1. {main}() C:\wamp\www\1520\Assignment3\init.php:0
+[10-Nov-2013 18:03:28 America/New_York] PHP   2. query() C:\wamp\www\1520\Assignment3\init.php:23
+[10-Nov-2013 18:03:28 America/New_York] PHP   3. mysqli_fetch_array() C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php:48
+[10-Nov-2013 18:03:28 America/New_York] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, boolean given in C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php on line 48
+[10-Nov-2013 18:03:28 America/New_York] PHP Stack trace:
+[10-Nov-2013 18:03:28 America/New_York] PHP   1. {main}() C:\wamp\www\1520\Assignment3\init.php:0
+[10-Nov-2013 18:03:28 America/New_York] PHP   2. query() C:\wamp\www\1520\Assignment3\init.php:31
+[10-Nov-2013 18:03:28 America/New_York] PHP   3. mysqli_fetch_array() C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php:48
+[10-Nov-2013 18:03:28 America/New_York] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, boolean given in C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php on line 48
+[10-Nov-2013 18:03:28 America/New_York] PHP Stack trace:
+[10-Nov-2013 18:03:28 America/New_York] PHP   1. {main}() C:\wamp\www\1520\Assignment3\init.php:0
+[10-Nov-2013 18:03:28 America/New_York] PHP   2. query() C:\wamp\www\1520\Assignment3\init.php:32
+[10-Nov-2013 18:03:28 America/New_York] PHP   3. mysqli_fetch_array() C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php:48
+[10-Nov-2013 18:03:28 America/New_York] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, boolean given in C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php on line 48
+[10-Nov-2013 18:03:28 America/New_York] PHP Stack trace:
+[10-Nov-2013 18:03:28 America/New_York] PHP   1. {main}() C:\wamp\www\1520\Assignment3\init.php:0
+[10-Nov-2013 18:03:28 America/New_York] PHP   2. query() C:\wamp\www\1520\Assignment3\init.php:33
+[10-Nov-2013 18:03:28 America/New_York] PHP   3. mysqli_fetch_array() C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php:48
+[10-Nov-2013 18:03:43 America/New_York] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, boolean given in C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php on line 48
+[10-Nov-2013 18:03:43 America/New_York] PHP Stack trace:
+[10-Nov-2013 18:03:43 America/New_York] PHP   1. {main}() C:\wamp\www\1520\Assignment3\init.php:0
+[10-Nov-2013 18:03:43 America/New_York] PHP   2. query() C:\wamp\www\1520\Assignment3\init.php:14
+[10-Nov-2013 18:03:43 America/New_York] PHP   3. mysqli_fetch_array() C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php:48
+[10-Nov-2013 18:03:43 America/New_York] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, boolean given in C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php on line 48
+[10-Nov-2013 18:03:43 America/New_York] PHP Stack trace:
+[10-Nov-2013 18:03:43 America/New_York] PHP   1. {main}() C:\wamp\www\1520\Assignment3\init.php:0
+[10-Nov-2013 18:03:43 America/New_York] PHP   2. query() C:\wamp\www\1520\Assignment3\init.php:23
+[10-Nov-2013 18:03:43 America/New_York] PHP   3. mysqli_fetch_array() C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php:48
+[10-Nov-2013 18:03:43 America/New_York] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, boolean given in C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php on line 48
+[10-Nov-2013 18:03:43 America/New_York] PHP Stack trace:
+[10-Nov-2013 18:03:43 America/New_York] PHP   1. {main}() C:\wamp\www\1520\Assignment3\init.php:0
+[10-Nov-2013 18:03:43 America/New_York] PHP   2. query() C:\wamp\www\1520\Assignment3\init.php:31
+[10-Nov-2013 18:03:43 America/New_York] PHP   3. mysqli_fetch_array() C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php:48
+[10-Nov-2013 18:03:43 America/New_York] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, boolean given in C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php on line 48
+[10-Nov-2013 18:03:43 America/New_York] PHP Stack trace:
+[10-Nov-2013 18:03:43 America/New_York] PHP   1. {main}() C:\wamp\www\1520\Assignment3\init.php:0
+[10-Nov-2013 18:03:43 America/New_York] PHP   2. query() C:\wamp\www\1520\Assignment3\init.php:32
+[10-Nov-2013 18:03:43 America/New_York] PHP   3. mysqli_fetch_array() C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php:48
+[10-Nov-2013 18:03:43 America/New_York] PHP Warning:  mysqli_fetch_array() expects parameter 1 to be mysqli_result, boolean given in C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php on line 48
+[10-Nov-2013 18:03:43 America/New_York] PHP Stack trace:
+[10-Nov-2013 18:03:43 America/New_York] PHP   1. {main}() C:\wamp\www\1520\Assignment3\init.php:0
+[10-Nov-2013 18:03:43 America/New_York] PHP   2. query() C:\wamp\www\1520\Assignment3\init.php:33
+[10-Nov-2013 18:03:43 America/New_York] PHP   3. mysqli_fetch_array() C:\wamp\www\1520\Assignment3\Core\Backend\Helpers.php:48
