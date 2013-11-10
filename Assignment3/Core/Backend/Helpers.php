@@ -13,7 +13,7 @@ date_default_timezone_set('America/New_York');
 
 //Initializes the database used by this phase of the project
 
-echo 'Connecting to database... ';
+// echo 'Connecting to database... ';
 
 $host = 'localhost';
 $username = 'root';
@@ -28,7 +28,7 @@ if(!preg_match('/localhost/',HOST)) {
 $db = new mysqli($host, $username, $password, $database);
 if(!$db) exit;
 
-echo 'Success</br>';
+// echo 'Success</br>';
 
 function query($query){
   global $db;
@@ -57,8 +57,53 @@ function getHtml($filename){
 
 
 function loggedIn() {
+  echo 'create: '.isset($_POST['create_attempt']).'<br>';
+  echo 'login: '.isset($_POST['login_attempt']).'<br>';
   
+  if (isset($_SESSION['loggedin'])) {
+    echo 'already logged in';
+    return true;
+  } 
+  else if (isset($_POST['login_attempt'])){
+    echo 'attempted login';
+  } 
+  else if (isset($_POST['create_attempt'])){
+    echo 'attempted login';
+  }  else {
+    
+  }
 }
 
+function printAll(){
+  printPost();
+  echo '<br>';
+  printSession();
+}
+
+function printPost(){  
+    foreach ($_POST as $key => $value) {
+        echo "<tr>";
+        echo "<td>";
+        echo $key;
+        echo "</td>";
+        echo "<td>";
+        echo $value;
+        echo "</td>";
+        echo "</tr>";
+    }
+}
+function printSession(){  
+    if(!isset($_SESSION)) {return;}
+    foreach ($_SESSION as $key => $value) {
+        echo "<tr>";
+        echo "<td>";
+        echo $key;
+        echo "</td>";
+        echo "<td>";
+        echo $value;
+        echo "</td>";
+        echo "</tr>";
+    }
+}
 
 ?>

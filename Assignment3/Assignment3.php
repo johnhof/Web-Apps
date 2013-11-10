@@ -4,6 +4,6 @@
 ?>
 <script type="text/javascript">
 <!--
-window.location = "./Home.do"
+window.location = "./Home.php"
 //-->
 </script>

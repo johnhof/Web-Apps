@@ -2,11 +2,11 @@
 
 include_once './Helpers.php';
 
-$gameHtml = './HTML/Game.do';
-$forgotHtml = './HTML/Forgot.do';
-$homeHtml = './HTML/Home.do';
-$loginHtml = './HTML/Login.do';
-$logoutHtml = './HTML/Logout.do';
+$gameHtml = './HTML/Game.php';
+$forgotHtml = './HTML/Forgot.php';
+$homeHtml = './HTML/Home.php';
+$loginHtml = './HTML/Login.php';
+$logoutHtml = './HTML/Logout.php';
 
 
 function execute(action) { 
