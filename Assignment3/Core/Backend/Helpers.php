@@ -7,6 +7,10 @@ else define('HOST', 'http://cs1520.cs.pitt.edu/~jmh162/php/Assignment3/', true);
 
 date_default_timezone_set('America/New_York');
 
+ini_set("log_errors", 1);
+ini_set("error_log", "./log.txt");
+
+
 /*---------------------------------------------------------------------------------*/
 /*-- DB utilities
 /*---------------------------------------------------------------------------------*/
@@ -25,6 +29,7 @@ if(!preg_match('/localhost/',HOST)) {
   $password = 'sour/thank';
   $database = 'HofrichterJ';
 }
+
 $db = new mysqli($host, $username, $password, $database);
 if(!$db) exit;
 
@@ -32,7 +37,6 @@ if(!$db) exit;
 
 function query($query){
   global $db;
-  print_r($query);
   $results = $db->query($query);
   if($db->error){
     print_r($db->error);
@@ -74,6 +78,31 @@ function loggedIn() {
   }
 }
 
+function getValue($rsc, $var){
+  $result = false;
+  if ($rsc == 'session') { 
+    if(isset($_SESSION)){
+      if(isset($_SESSION[$var]))  $result = $_SESSION[$var];
+    }
+  }
+  if ($rsc == 'post') { 
+    if(isset($_POST)){
+      if(isset($_POST[$var])) $result = $_POST[$var];
+    }
+  }
+  if ($rsc == 'get') { 
+    if(isset($_GET)){
+      if(isset($_GET[$var])) $result = $_GET[$var];
+    }
+  }
+  //error_log('getValue: '.$rsc.'('.$var.')='.$result);
+  return  $result;
+}
+
+function redirect ($url) {
+   echo '<script type="text/javascript">window.location = "./../../'.$url.'"</script>';
+}
+
 function printAll(){
   printPost();
   echo '<br>';
@@ -105,5 +134,7 @@ function printSession(){
         echo "</tr>";
     }
 }
-
+function println($string){
+  echo $string.'<br>';
+}
 ?>
