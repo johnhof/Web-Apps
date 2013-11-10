@@ -18,14 +18,27 @@ define('WARNING','WARNING', true);
 define('SUCCESS','SUCCESS', true);
 
 
-define('HOST', 'http'.(empty($_SERVER['HTTPS'])?'':'s').'://'.$_SERVER['SERVER_NAME'].'/1520/Assignment2/Assignment2.php?', true);
+if(preg_match('/localhost/','http'.(empty($_SERVER['HTTPS'])?'':'s').'://'.$_SERVER['SERVER_NAME'])){
+	define('HOST', 'http'.(empty($_SERVER['HTTPS'])?'':'s').'://'.$_SERVER['SERVER_NAME'].'/1520/Assignment2/Assignment2.php?', true);
+}
+else define('HOST', 'http://cs1520.cs.pitt.edu/~jmh162/php/Assignment2/Assignment2.php?', true);
 date_default_timezone_set('America/New_York');
 
 //--------------------------------------------------------------------------------------------------------------------------------------
 //--------	UNIVERSAL VARIABLES
 //--------------------------------------------------------------------------------------------------------------------------------------
+$host = 'localhost';
+$username = 'root';
+$password = '';
+$database = 'mysql';
 
-$db = new DBWrapper('localhost', 'root', '', 'mysql');
+if(!preg_match('/localhost/',HOST)) {
+	$username = 'HofrichterJ';
+	$password = 'sour/thank';
+	$database = 'HofrichterJ';
+}
+
+$db = new DBWrapper($host, $username, $password, $database);
 
 //--------------------------------------------------------------------------------------------------------------------------------------
 //--------	MESSAGE HANDLER
@@ -65,17 +78,20 @@ Class MessageHandler{
 function emailPassword($email){
 	global $db;
     $msg = 'your password is';
-    $result = $db->simpleSelect('Users', ['password'], 'email="'.$email.'" and maker=true');
+    $result = $db->simpleSelect('Users', array(0=>'password'), 'email="'.$email.'" and maker=true');
+
     if($result->num_rows == 0)return false;
-    $pwd = mysqli_fetch_array($result)[0];
-    //TODO:email
-    //mail($email, 'Password Reminder', $pwd);
+    $pwd = mysqli_fetch_array($result);
+    $pwd = $pwd[0];
+
+    mail($email, 'Password Reminder', $pwd);
+
     return true;
 }
 
 function validateCreds($email, $pwd){
 	global $db;
-    $result = $db->simpleSelect('Users', ['*'], 'email="'.$email.'" and password="'.$pwd.'" and maker=true');
+    $result = $db->simpleSelect('Users', array(0=>'*'), 'email="'.$email.'" and password="'.$pwd.'" and maker=true');
     if($result->num_rows == 0)return false;
     else return true;
 }
@@ -83,16 +99,12 @@ function validateCreds($email, $pwd){
 function createSchedule($name, $maker, $times, $users){
 	global $db;
 	$msg = 'Schedule creation failed';
-	println($name);
-	println($times);
-	println($users);
-
 	if(!$name) return $msg.': invalid name';
 
 	//create schedule
-	if($db->exists('Schedules', ['*'], 'maker="'.$maker.'" and name="'.$name.'"')) return $msg.': You already have a schedule of that name';
+	if($db->exists('Schedules', array(0=>'*'), 'maker="'.$maker.'" and name="'.$name.'"')) return $msg.': You already have a schedule of that name';
 
-	$db->insert('Schedules', [stringify($maker),stringify($name)]);
+	$db->insert('Schedules', array(stringify($maker),stringify($name)));
 	$scheduleId = 'schedule='.$maker.'_'.$name;
 
 	$msg = 'Schedule created';
@@ -106,23 +118,20 @@ function createSchedule($name, $maker, $times, $users){
 			$userName = $parsed[0];
 			$userEmail = $parsed[1];
 
-			if($db->exists('Users', ['*'], 'email="'.$userEmail.'"')) continue;
-			$db->insert('Users', [stringify($userName),stringify($userEmail),'""','"false"']);
+			if($db->exists('Users', array(0=>'*'), 'email="'.$userEmail.'"')) continue;
+			$db->insert('Users', array(stringify($userName),stringify($userEmail),'""','"false"'));
 			
 			//email links
 			$queryStr = $scheduleId.'&viewer='.$userEmail;
 			$userLink = HOST.$queryStr;
-			println($userLink);
-			//
-			//
-			//TODO: Email users their links
-			//
-			//				
+
+    		mail($userEmail, 'New Schedule created!', $userLink);
+
 			//once the user exists, assign them times
 			$timesArray = explode('-',$times);
 			foreach($timesArray as $time){
-				$time = str_replace([':'], ' ', $time);
-				$values = [stringify($userEmail), stringify($maker), stringify($name), stringify($time), "false"];
+				$time = str_replace(array(0=>':'), ' ', $time);
+				$values = array(stringify($userEmail), stringify($maker), stringify($name), stringify($time), "false");
 				$db->insert('Times', $values);
 			}
 
@@ -135,7 +144,7 @@ function createSchedule($name, $maker, $times, $users){
 
 function getSchedule($schedule, $viewer, $inEdit){
 	global $db;
-
+	$msg = 'fail';
 
 	$params = explode('_',$schedule);
 	if(count($params) < 2) return false;
@@ -144,7 +153,7 @@ function getSchedule($schedule, $viewer, $inEdit){
 	$maker = str_replace(' ', '+', $params[0]); 
 	$schedule = $params[1];
 
-	if(!$db->exists('Schedules', ['*'], 'maker="'.$maker.'" and name="'.$schedule.'"')) return ['No such schedule'];
+	if(!$db->exists('Schedules', array('*'), 'maker="'.$maker.'" and name="'.$schedule.'"')) return array('No such schedule');
 
 	//build the basic schedule
 	$scheduleObj = new Schedule($schedule, $maker);
@@ -152,33 +161,42 @@ function getSchedule($schedule, $viewer, $inEdit){
 	$scheduleObj->setInEdit($inEdit);
 
 	//get the times for the schedule
-	$times = $db->distinctSelect('Times', ['dateTime'], 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'"');
-	if(!$times) return $msg;
-	$times = mysqli_fetch_all($times);
+	$reults = $db->distinctSelect('Times', array('dateTime'), 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'"');
+	if(!$reults) return $msg;
+	$times = array();
+	while ($time = mysqli_fetch_array($reults)){
+		array_push($times, $time[0]);
+	}
+
 
 	//get the users for the schedule
-	$users = $db->distinctSelect('Times', ['userEmail'], 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'"');
-	if(!$users) return $msg;
-	$users = mysqli_fetch_all($users);
+	$reults = $db->distinctSelect('Times', array('userEmail'), 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'"');
+	if(!$reults) return $msg;
+	$users = array();
+	$user = '';
+	while ($user = mysqli_fetch_array($reults)){
+		array_push($users, $user[0]);
+	}
 
 	foreach($times as $time){
 		//query results are nested by row
-		$time = $time[0];
+		$time = $time;
 
 		//attempt to add time
 		$scheduleObj->addTime($time);
 
 		foreach($users as $user){
 			//query results are nested by row
-			$user = $user[0];
+			$user = $user;
 
 			//attempt to add user
 			$scheduleObj->addUser($user);
 
-			$result = $db->simpleSelect('Times', ['going'], 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'" and dateTime="'.$time.'" and userEmail="'.$user.'"');
+			$result = $db->simpleSelect('Times', array('going'), 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'" and dateTime="'.$time.'" and userEmail="'.$user.'"');
 
 			if($result && $result->num_rows == 1){
-				$result = mysqli_fetch_array($result)[0];
+				$result = mysqli_fetch_array($result);
+				$result = $result[0];
 				$result == 0 ? true: false;
 				$scheduleObj->setUserTime($user, $time, $result);
 			}
@@ -193,20 +211,23 @@ function getSchedule($schedule, $viewer, $inEdit){
 function finalizeSchedule($email){
 	global $db;
 	$msg = 'Schedule finalization failed';	
-	$result = [];
+	$result = array();
 
-	$tables = $db->simpleSelect('schedules', ['name'], 'maker="'.$email.'"');
-	if(!$tables) return 'No schedules owned';
-	$tables = mysqli_fetch_all($tables);
+	$results = $db->simpleSelect('Schedules', array('name'), 'maker="'.$email.'"');
+	if(!$results) return 'No schedules owned';
+	$tables = array();
+	while ($table = mysqli_fetch_array($results)){
+		array_push($tables, $table[0]);
+	}
 
 	$result[1] = array();
 	$result[2] = array();
 	foreach($tables as $table){
 		//stash each table name and url
-		array_push($result[1],$table[0]);
+		array_push($result[1],$table);
 
-		$link = HOST.'schedule='.$email.'_'.$table[0];
-		$result[2][$table[0]] = $link;
+		$link = HOST.'schedule='.$email.'_'.$table;
+		$result[2][$table] = $link;
 	}
 
 	$result[0]='';
@@ -224,11 +245,12 @@ function submitEntries($scheduleId, $viewer, $values){
 
 
 	//get all times for this  table
-	$result = $db->simpleSelect('Times', ['dateTime'], 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'" and userEmail="'.$viewer.'"');
+	$reults = $db->simpleSelect('Times', array('dateTime'), 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'" and userEmail="'.$viewer.'"');
 
-	if($result && $result->num_rows != 0){
-		$times = [];
-		while ($time = mysqli_fetch_array($result)){
+	if($reults && $reults->num_rows != 0){
+		$times = array();
+		$time = '';
+		while ($time = mysqli_fetch_array($reults)){
 			array_push($times, $time[0]);
 		}
 
@@ -236,10 +258,8 @@ function submitEntries($scheduleId, $viewer, $values){
 		foreach($times as $time){
 			if(in_array($time, $values)){
 				$db->exec('Update Times Set going=true Where makerEmail="'.$maker.'" and scheduleName="'.$schedule.'" and dateTime="'.$time.'" and userEmail="'.$viewer.'"');
-				println('setting '.$viewer.':'.$time.' to true');	
 			}
 			else{
-				println('setting '.$viewer.':'.$time.' to false');
 				$db->exec('Update Times Set going=false Where makerEmail="'.$maker.'" and scheduleName="'.$schedule.'" and dateTime="'.$time.'" and userEmail="'.$viewer.'"');	
 			}
 		}
@@ -252,11 +272,11 @@ function finalize($schedule, $maker){
 	$return = array(0=>$msg);
 
 	//get all times for this table
-	$result = $db->distinctSelect('Times', ['dateTime'], 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'"');
+	$reults = $db->distinctSelect('Times', array('dateTime'), 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'"');
 
-	if($result && $result->num_rows != 0){
-		$times = [];
-		while ($time = mysqli_fetch_array($result)){
+	if($reults && $reults->num_rows != 0){
+		$times = array();
+		while ($time = mysqli_fetch_array($reults)){
 			array_push($times, $time[0]);
 		}
 
@@ -264,7 +284,7 @@ function finalize($schedule, $maker){
 		$max = -1;
 		foreach ($times as $time){
 			//get the list of users going at the current time
-			$result = $db->simpleSelect('Times', ['*'], 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'" and datetime="'.$time.'" and going='.true);
+			$result = $db->simpleSelect('Times', array('*'), 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'" and datetime="'.$time.'" and going='.true);
 
 			//if its the new max count, store it
 			if($result->num_rows > $max){
@@ -274,17 +294,18 @@ function finalize($schedule, $maker){
 		}
 
 		//get all times for this table
-		$result = $db->distinctSelect('Times', ['userEmail'], 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'"');
-		if($result && $result->num_rows != 0){
-			$users = [];
-			while ($user = mysqli_fetch_array($result)){
+		$reults = $db->distinctSelect('Times', array('userEmail'), 'makerEmail="'.$maker.'" and scheduleName="'.$schedule.'"');
+		if($reults && $reults->num_rows != 0){
+			$users = array();
+			while ($user = mysqli_fetch_array($reults)){
 				array_push($users, $user[0]);
 			}
 			$msg = 'Time selected: '.$timeChosen;
 			$msg = $msg.'<br>Emailing users: '; 
 			foreach($users as $user){
 				$msg = $msg.$user.'; ';
-				//TODO: email!!!
+				$body = 'Schedule: '.$schedule.' - finalized to time: '.$timeChosen;
+    			mail($user, 'New Schedule created!', $body);
 			}
 		}
 	}

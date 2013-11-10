@@ -11,6 +11,7 @@ Class DBWrapper{
 
 	function __construct($host, $name, $passwd, $dbName) {
       $this->db = new mysqli($host, $name, $passwd, $dbName);
+      
 
       if ($this->db->connect_error){
       	echo "failed to connect: create a new db";
@@ -29,8 +30,6 @@ Class DBWrapper{
       } 
 
       $query = $query.')';
-
-      echo '</br>'.$query.'</br>';
       
       return $this->exec($query);
    	}
@@ -136,7 +135,7 @@ Class DBWrapper{
       //println('Executing: ['.$query.']');
       $result = $this->db->query($query);
       if(!$result){
-        println("Invalid query " . $this->db->error);
+        //println("Invalid query " . $this->db->error);
         return false;
       } else {
       	return $result;
@@ -146,7 +145,7 @@ Class DBWrapper{
 //-------- HELPERS ----------------------------------------------------------------------------------------------------------------------
 
    	function tableToString($table){
-   		$result = $this->simpleSelect($table, ['*']);
+   		$result = $this->simpleSelect($table, array(0=>'*'));
    		print_r($result);
    	}
 

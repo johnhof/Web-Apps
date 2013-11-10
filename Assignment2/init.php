@@ -12,8 +12,18 @@
 
   echo 'Connecting to database... ';
 
-  $db = new DBWrapper('localhost', 'root', '', 'mysql');
+  $host = 'localhost';
+  $username = 'root';
+  $password = '';
+  $database = 'mysql';
 
+  if(!preg_match('/localhost/',HOST)) {
+    $username = 'HofrichterJ';
+    $password = 'sour/thank';
+    $database = 'HofrichterJ';
+  }
+
+$db = new DBWrapper($host, $username, $password, $database);
   if(!$db) exit;
 
   echo 'Success</br>';
@@ -33,21 +43,21 @@
   echo 'generating tables... ';
 
   //USERS
-  $db->createTable('Users',['email char(30) primary key not null',
+  $db->createTable('Users',array('email char(30) primary key not null',
       							          'name char(30) not null',
       							          'password char(50) not null default "pwd"',
-                              'maker boolean not null default false']);
+                              'maker boolean not null default false'));
   //SCHEDULE
-  $db->createTable('Schedules',['maker char(30) not null',
+  $db->createTable('Schedules',array('maker char(30) not null',
       							            'name char(30) not null',
-                                'primary key (maker, name)']);
+                                'primary key (maker, name)'));
   //TIME
-  $db->createTable('Times',['userEmail char(30) not null default "default"',
+  $db->createTable('Times',array('userEmail char(30) not null default "default"',
       						          'makerEmail char(30) not null',
                             'scheduleName char(30) not null',
                             'dateTime char(30) not null',
                             'going boolean not null default false',
-      						          'primary key (userEmail, makerEmail, scheduleName, dateTime)']);
+      						          'primary key (userEmail, makerEmail, scheduleName, dateTime)'));
   echo 'Success</br>';
 
 //-------- ADD TUPLES -------------------------------------------------------------------------------------------------------------------

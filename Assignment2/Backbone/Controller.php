@@ -20,7 +20,6 @@ Class Controller{
       $msg = false;
 
       if($forgot){
-         $msg = 'Invalid email';
          $pwdEmail = $_GET['email'];
 
          if($pwdEmail && emailPassword($pwdEmail)) $msg = 'Email Sent to '.$email;
@@ -35,14 +34,14 @@ Class Controller{
                $_SESSION['email'] = $email;
                $_SESSION['pwd'] = $pwd;
               
-               $view->setType('home',[]);
+               $view->setType('home', array());
                return $view;
             }
          }
          if($fail) $msg = 'Login Failed';
       }
 
-      $view->setType('login',[$msg]);
+      $view->setType('login', array(0=>$msg));
 
       return $view;
    }
@@ -59,7 +58,7 @@ Class Controller{
 
       if($model->isCreate()){
          $result = createSchedule($model->createName(), $model->makerEmail(), $model->createTimes(), $model->createUsers());
-         $view->setType('home',[$result]);
+         $view->setType('home',array(0=>$result));
       }
       else if($model->isFinalize()){
          $result = finalizeSchedule($model->makerEmail());
@@ -69,16 +68,16 @@ Class Controller{
          $action = $model->getOption();
 
          if($action == 'create'){
-            $view->setType('create',[]);
+            $view->setType('create',array());
          }
          else if($action == 'finalize'){
-            $view->setType('finalize',[]);
+            $view->setType('finalize',array());
          }
          else if($action == 'logout'){
             session_unset();
-            $view->setType('login',['You are now logged out']); 
+            $view->setType('login',array(0=>'You are now logged out')); 
          }
-         else $view->setType('home',[]);
+         else $view->setType('home',array());
       }
 
       return $view;

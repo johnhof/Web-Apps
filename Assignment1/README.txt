@@ -1,4 +1,20 @@
-Files Required:
+Name: John Hofrichter 
+
+Assignment #: 1
+
+Recitation Day and Time: Thurs-2:00
+
+TA: Qiao Zhang
+
+Program Due Date: 9/25
+
+Handed in Date: 9/22 
+
+URL of Program: http://cs1520.cs.pitt.edu/~jmh162/php/Assignment1/Assignment1.php
+
+AFS Path of Source Code: /afs/pitt.edu/home/j/m/jmh162/public/csweb/php/Assignment1/Assignment1.php
+
+Source code file name(s):
 	-Assignment1.php 
 		-HTML tag, which calls driver.php
 
@@ -17,7 +33,14 @@ Files Required:
 	-utility.php
 		-general purpose utilities, sucha s printing and formatting output
 
-General Description:
+
+Other file name(s) (if relevant): none
+
+
+Does your program run without error?: yes 
+
+
+Additional comments (including problems and extra credit):
 	This project was build to follow the Controller design pattern. Things like I/o and HTML formatting are abstracted into subcalsses called in wrapper functions buy the constructor itself. Not HTML is written directly, but all generated through PHP string manipulation. Additionally, I/O function cals are left ambiguously named so that the I/O method can be unplugged and repleced with another (files are a poor way to do this), without greaty effecting the code written. Rather than calling I/o at ever table display and manipulation, the I/O is only used during setup and submission. Using a persistant internal representation allows for easy updating. if the file is changed befor a user submits their own change, the data set is reloaded by default, and the sumbission is applied to the updated dataset. this makes mutual editing siple. Locks are only used when an actual read or write taked place.
 
 	Note, the internal table should be its own class if I were following the controller pattern more closely, but it initially did not seem to be necessary. Roughly half the code in controller sohuld be pushed to a table class.
