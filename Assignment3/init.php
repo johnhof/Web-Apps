@@ -20,7 +20,7 @@
   echo 'generating tables... ';
 
   //USERS
-  query("create table email (char(30) primary key not null, name char(30) not null, password char(50) not null default 'pwd')");
+  query("create table Users (email char(30) primary key not null, name char(30) not null, password char(50) not null default 'pwd')");
   
   echo 'Success</br>';
 
