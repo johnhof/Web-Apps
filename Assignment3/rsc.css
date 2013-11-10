@@ -1,0 +1,98 @@
+
+
+/*---------------------------------------------------------------------------------*/
+/*--  PRE-SET ELEMENTS
+/*---------------------------------------------------------------------------------*/
+
+
+html {
+  background-color: #D9D9DB;
+}
+body {    
+  text-align: center; 
+  font-family: arial;  
+  font: bold 15px Arial;  
+}
+h1 {  
+  padding:0px;
+  margin: 0px;
+  color: #4C4C4D;       
+}
+h2 {
+  padding: 0px;
+  margin: 0px;
+}
+h3 {
+  padding: 0px;
+  margin: 0px;
+  font: bold 18px Arial;  
+}
+
+/*---------------------------------------------------------------------------------*/
+/*-- STRUCTURE CLASSES
+/*---------------------------------------------------------------------------------*/
+
+.main {
+  background-color: #F2F2F2;  
+  color: #636363;
+  border-bottom: 2px solid #C4C4C4;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.heading {
+  margin-top: 5px;
+  padding-top: 5px;
+  padding-right: 15px;
+  padding-left: 15px;
+  border-bottom: 1px solid #CCCCCC;
+  font: bold 20px Arial;  
+}
+
+.content {
+  padding: 20px;
+}
+
+.message {
+  margin-top: 5px;
+  padding: 5px;
+  padding-right: 15px;
+  padding-left: 15px;
+  background-color: #F2F2F2;  
+  color: #4F1B21;
+  border-bottom: 2px solid #C4C4C4;
+  border-radius: 2px;
+  display: inline-block; 
+  font: bold 12px Arial; 
+}
+
+
+/*---------------------------------------------------------------------------------*/
+/*-- MINOR CLASSES
+/*---------------------------------------------------------------------------------*/
+
+.subtext {
+  font: 10px arial;
+  background:none;
+  border:none;
+}
+
+.link {
+  cursor: pointer; 
+  cursor: hand; 
+  color:blue;
+}
+
+.false_button {
+  margin:10px;
+  border-radius: 2px;
+  text-decoration: none;
+  background-color: #788BF5;
+  color: #444445;
+  padding: 2px 6px 2px 6px;
+  border: 1px solid #CCCCCC;
+  border-bottom: 2px solid #CCCCCC;
+  cursor: pointer; 
+  cursor: hand; 
+  font: bold 15px Arial;  
+}
