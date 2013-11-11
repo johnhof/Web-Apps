@@ -1,11 +1,47 @@
 <!DOCTYPE html>
 <html>
 <link rel="stylesheet" type="text/css" href="rsc.css" media="screen" />
-<title>Home</title>
+<title>Lingo</title>
 
 <script type="text/javascript" src="./Core/Frontend/Helpers.js"></script>
 <script type="text/javascript">
+
   document.write(genericBody);
   requestContent('gamePage', formatResponse);
+
+function gameDriver(){
+  initTable(5);
+
+}
+
+
+/*---------------------------------------------------------------------------------*/
+/*-- UTILITIES
+/*---------------------------------------------------------------------------------*/
+
+function newGame () { 
+
+}
+
+function submitGuess () {
+
+}
+
+function initTable (size) {
+  var table = "";
+
+
+  for (var i = 0; i < size; i++) {
+    var row =  '<tr id="r'+i+'">';
+    for (var j = 0; j < size; j++) {
+      var cell = '<td id="c'+i+j+'" class="game_cell"></td>'
+      row = row + cell;
+    }
+    row = row + '</tr>';
+    table+=row;
+  }
+  document.getElementById('game_table').innerHTML = 'test';
+}
+
 </script>
 </html>

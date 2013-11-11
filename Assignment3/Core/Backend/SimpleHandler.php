@@ -5,6 +5,7 @@ include_once './Helpers.php';
 include_once './Core.php';
 
 $req       = getValue('post', 'request');
+$forgot    = getValue('post', 'forgot');
 $creating  = getValue('post', 'create_attempt');
 $loggingIn = getValue('post', 'login_attempt');
 $email     = getValue('post', 'email');
@@ -13,10 +14,6 @@ $name      = getValue('post', 'name');
 
 $status_in = getValue('session', 'logged_In');
 
-error_log($creating);
-error_log($email);
-error_log($password);
-error_log($name);
 
 // determine the requested page
 if ($req){
@@ -66,9 +63,13 @@ if ($req){
   }
 }
 
+// forgot password
+else if ($forgot && $email) {
+  echo forgotReq($email);
+}
+
 // attempting to create a user
 else if ($creating && $email && $name && $password) {
-  error_log('woot');
   echo createReq($email, $name, $password);
 }
 

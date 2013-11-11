@@ -3,11 +3,9 @@
 include_once './Helpers.php';
 include_once './JsonResource.php';
 
-
-
-function homePage () {
-  return homeJson(array(), '');
-}
+/*---------------------------------------------------------------------------------*/
+/*-- ACTION REQUESTS
+/*---------------------------------------------------------------------------------*/
 
 function createReq ($email, $name, $password) {
   echo '<div align="center">Submitting Credentials...</div></br>';
@@ -42,6 +40,35 @@ function loginReq ($email, $password) {
   echo '<div align="center">...Success.</div></br>';
   $_SESSION['logged_In']=true;
   redirect('Home.html');
+}
+
+function forgotReq ($email) {
+  echo '<div align="center">Sending email...</div></br>';
+  $result = query('select * from Users where email="'.$email.'"');
+
+  // user exists
+  if (!$result) {
+    echo '<div align="center">...Failure.</div></br>';
+    echo '<script type="text/javascript">alert("No such user found")</script>'; 
+  }
+  else {
+    mail($email, 'Password Reminder', $result[0]['password']);
+    echo '<script type="text/javascript">alert("Email sent")</script>'; 
+    echo '<div align="center">...Success.</div></br>';
+  }
+
+  redirect('Login.html'); 
+
+}
+
+
+
+/*---------------------------------------------------------------------------------*/
+/*--  CONTENT RETRIEVAL
+/*---------------------------------------------------------------------------------*/
+
+function homePage () {
+  return homeJson(array(), '');
 }
 
 function loginPage () {

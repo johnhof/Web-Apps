@@ -28,6 +28,7 @@ function forgotJson ($array, $msg) {
   $array['content'] = '<h3>Submit account email</h3></br>'
                       .'<form method="POST" action="./Core/Backend/SimpleHandler.php">'
                         .'Email: <input type="text" name="email"/><br/>'
+                        .'<input type="hidden" name="forgot" value="true"/><br/>'
                         .'<input type="submit" value="Send Reminder" class="false_button"/>'
                       .'</form>';
   $array['message'] = $msg;
@@ -45,6 +46,55 @@ function loginJson ($array, $msg) {
                        .' <input type="submit" value="Login" class="false_button"/>'
                       .'</form>'
                       .'<a href="./Create.html" class="false_button">Create New User</a>';
+  $array['message'] = $msg;
+  return  $json = json_encode($array);  
+}
+
+function gameJson ($array, $msg) {
+  $array['heading'] = '<h1>Lingo!</h1><br>';
+  $array['content'] = '<input type="button" id="new" name="new" class="false_button" value="Try a new word" onclick="newGame()"/></br>'
+                      .'<div id="guess_box" class="guess_box">'
+                        .'Enter Guess: '
+                        .'<input type="text" id="guess" name="guess"/>'
+                        .'<input type="button" id="submit_guess" name="submit_guess" value="Submit" class="false_button" onclick="submitGuess()"/>'
+                      .'</div></br>'
+                      .'<table id="game_table" class="game_table">'
+                        .'<tr id="r0">'
+                          .'<td class="game_cell" id="c00"></td>'
+                          .'<td class="game_cell" id="c01"></td>'
+                          .'<td class="game_cell" id="c02"></td>'
+                          .'<td class="game_cell" id="c03"></td>'
+                          .'<td class="game_cell" id="c04"></td>'
+                        .'</tr>'
+                        .'<tr id="r1">'
+                          .'<td class="game_cell" id="c10"></td>'
+                          .'<td class="game_cell" id="c11"></td>'
+                          .'<td class="game_cell" id="c12"></td>'
+                          .'<td class="game_cell" id="c13"></td>'
+                          .'<td class="game_cell" id="c14"></td>'
+                        .'</tr>'
+                        .'<tr id="r2">'
+                          .'<td class="game_cell" id="c20"></td>'
+                          .'<td class="game_cell" id="c21"></td>'
+                          .'<td class="game_cell" id="c22"></td>'
+                          .'<td class="game_cell" id="c23"></td>'
+                          .'<td class="game_cell" id="c24"></td>'
+                        .'</tr>'
+                        .'<tr id="r3">'
+                          .'<td class="game_cell" id="c30"></td>'
+                          .'<td class="game_cell" id="c31"></td>'
+                          .'<td class="game_cell" id="c32"></td>'
+                          .'<td class="game_cell" id="c33"></td>'
+                          .'<td class="game_cell" id="c34"></td>'
+                        .'</tr>'
+                        .'<tr id="r4">'
+                          .'<td class="game_cell" id="c40"></td>'
+                          .'<td class="game_cell" id="c41"></td>'
+                          .'<td class="game_cell" id="c42"></td>'
+                          .'<td class="game_cell" id="c43"></td>'
+                          .'<td class="game_cell" id="c44"></td>'
+                        .'</tr>'
+                      .'</table>';
   $array['message'] = $msg;
   return  $json = json_encode($array);  
 }

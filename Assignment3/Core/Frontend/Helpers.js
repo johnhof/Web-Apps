@@ -43,7 +43,8 @@ function post (url, params, callback) {
 
 }
 
-function formatResponse(){
+function formatResponse(callback){
+  console.log(this)
 
   if (this.response.match(/xdebug-error xe-notice/)) {
    document.write(this.response);
@@ -63,6 +64,8 @@ function formatResponse(){
     msg.innerHTML = response.message;
     msg.className  = 'message';
   }
+
+  if(callback) return callback();
 }
 
 
