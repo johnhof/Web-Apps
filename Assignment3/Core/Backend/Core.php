@@ -23,6 +23,7 @@ function createReq ($email, $name, $password) {
 
   echo '<div align="center">...Success.</div></br>';
   $_SESSION['logged_In']=true;
+  $_SESSION['email']=$email;
   redirect('Home.html');
 }
 
@@ -39,6 +40,7 @@ function loginReq ($email, $password) {
 
   echo '<div align="center">...Success.</div></br>';
   $_SESSION['logged_In']=true;
+  $_SESSION['email']=$email;
   redirect('Home.html');
 }
 

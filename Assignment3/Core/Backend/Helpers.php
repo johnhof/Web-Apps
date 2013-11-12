@@ -9,6 +9,7 @@ date_default_timezone_set('America/New_York');
 
 ini_set("log_errors", 1);
 ini_set("error_log", "./log.txt");
+error_reporting(E_ERROR | E_PARSE);
 
 
 /*---------------------------------------------------------------------------------*/

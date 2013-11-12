@@ -20,7 +20,9 @@ function gameDriver(){
 /*---------------------------------------------------------------------------------*/
 
 function newGame () { 
-
+  post('./Core/Backend/GameHandler.php', 'request=new_game', function(){
+    document.getElementById('message').innerHTML = this.response;
+ })
 }
 
 function submitGuess () {

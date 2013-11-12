@@ -1,8 +1,0 @@
-[10-Nov-2013 18:50:09 America/New_York] PHP Fatal error:  Call to undefined function gameJson() in C:\wamp\www\1520\Assignment3\Core\Backend\Core.php on line 90
-[10-Nov-2013 18:50:09 America/New_York] PHP Stack trace:
-[10-Nov-2013 18:50:09 America/New_York] PHP   1. {main}() C:\wamp\www\1520\Assignment3\Core\Backend\SimpleHandler.php:0
-[10-Nov-2013 18:50:09 America/New_York] PHP   2. gamePage() C:\wamp\www\1520\Assignment3\Core\Backend\SimpleHandler.php:31
-[10-Nov-2013 18:58:17 America/New_York] PHP Parse error:  syntax error, unexpected '$array' (T_VARIABLE) in C:\wamp\www\1520\Assignment3\Core\Backend\JsonResource.php on line 56
-[10-Nov-2013 18:58:17 America/New_York] PHP Stack trace:
-[10-Nov-2013 18:58:17 America/New_York] PHP   1. {main}() C:\wamp\www\1520\Assignment3\Core\Backend\SimpleHandler.php:0
-[10-Nov-2013 18:58:17 America/New_York] PHP   2. include_once() C:\wamp\www\1520\Assignment3\Core\Backend\SimpleHandler.php:5
