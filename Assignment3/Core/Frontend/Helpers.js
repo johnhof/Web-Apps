@@ -34,8 +34,6 @@ function post (url, params, callback) {
 
   httpRequest.open('POST', url, true);
   httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-  // httpRequest.setRequestHeader("Content-length", params.length);
-  // httpRequest.setRequestHeader("Connection", "close");
 
   httpRequest.onreadystatechange = callback;
 

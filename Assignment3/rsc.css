@@ -120,3 +120,29 @@ input {
 .message_subtext {
   font: bold 17px arial;
 }
+
+/*---------------------------------------------------------------------------------*/
+/*-- MINOR CLASSES
+/*---------------------------------------------------------------------------------*/
+
+.wrong_location {
+  color: #02079C;
+  background-color: #DEDFFA;
+}
+
+.right_location {
+  color: #9C0202;
+  background-color: #FADEDE;
+}
+
+.wrong_letter {
+  color: #636262;
+  background-color: #CCCCCC;
+}
+
+.row_marker {
+  background-color: #7FD46E;
+  width: 2px;
+  height: 50px;
+  margin-right: 70px;
+}

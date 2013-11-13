@@ -13,30 +13,70 @@
   
   state = 0
   word  = null
-  guess = null
+  guess = '-----'
   turn  = 15
 
 
   /*-- STATE HANDLER ----------------------------------------------------------------*/
-  function advanceState(){    
+  
+  function advanceState (guessed){    
+    var upperGuess = guess ? guess.toUpperCase() : guess
+      , upperWord  = word ? word.toUpperCase() : word;
+    
     // if the turns were used
-    if (state > 4 && guess !== word) {      
+    if (state > 3 && upperGuess !== upperWord) {      
       return endGame('loss');
     }
     // if the guess was correct
-    if(state > 0 && guess === word) {       
+    if(state >= 0 && upperGuess === upperWord) {       
       return endGame('win')
+    }   
       
+    if(!guessed) {
+      timeOutRow();
     }
-    // otherwise, progress the game
     
     //if a timer is set, clear it
     if (timer) {
       timer.reset();
     }
     
-    //start timer
+    //mark the next row as the start
     state++;
+    document.getElementById('c' + state+ + 0).innerHTML = '<div class="row_marker"><div>';    
+  }
+    
+  function submitGuess () {
+      
+    guess = document.getElementById('guess').value;
+    
+    if(state >= 0 && state < 5) {
+      
+      for (var i = 0; i < 5; i++) {
+        
+        if(!guess[i]) {
+          var letter = ' ';
+        }
+        else {
+          letter = guess[i].toUpperCase();
+        }
+        
+        
+        if(letter === word[i].toUpperCase()){
+          markCell('right_location', i, letter);
+        }
+        else if (word.toUpperCase().indexOf(letter) >= 0) {
+          markCell('wrong_location', i, letter);        
+        }
+        else {
+          markCell('wrong_letter', i, letter.toLowerCase());
+        }
+      }
+    
+    document.getElementById('guess').value = "";
+    advanceState(true);
+    }
+    document.getElementById('guess').value = "";
   }
   
   
@@ -46,26 +86,30 @@
       document.getElementById('message').innerHTML = this.response;
       var response =  JSON.parse(this.response)
       word = response.word
+      console.log(word)
       
       initNewGame();
    })
   }
   
   function initNewGame () {
+    state = 0;
+    initTable();
     timer.init(turn, updateTime, timeOut);
+    document.getElementById('c' + state+ + 0).innerHTML = '<div class="row_marker"><div>';  
     timer.start()    
   }
   
   /*-- GAME TERMINATING--- ----------------------------------------------------------*/
   function endGame (wOrL){
+    timer.stop();
+    console.log(wOrL)
     if(wOrL === 'win') {
       post('./Core/Backend/GameHandler.php', 'request=mark_win', null)      
       var result = '<div class="message_header">Congratulations, you won!</div><br>';
-      //update db
     }
     else {
-      var result = '<div class="message_header">I\'m Sorry, the word was: ' + word + '</div><br>';
-      //update db
+      result = '<div class="message_header">I\'m Sorry, the word was: ' + word + '</div><br>';
     }
     
     post('./Core/Backend/GameHandler.php', 'request=get_stats', function(){
@@ -93,29 +137,35 @@
   /*---------------------------------------------------------------------------------*/
   /*-- GAME UTILITIES
   /*---------------------------------------------------------------------------------*/
-  function submitGuess () {
-
-  }
   
   function displayMessage (msg) {
-    document.getElementById('message').className = 'message'
+    document.getElementById('message').className = 'message';
     document.getElementById('message').innerHTML = msg;    
   }
-
-  function initTable (size) {
-    var table = "";
-
-
-    for (var i = 0; i < size; i++) {
-      var row =  '<tr id="r'+i+'">';
-      for (var j = 0; j < size; j++) {
-        var cell = '<td id="c'+i+j+'" class="game_cell"></td>'
-        row = row + cell;
-      }
-      row = row + '</tr>';
-      table+=row;
+  
+  /*-- TABLE MANAGEMENT -------------------------------------------------------------*/
+  
+  function timeOutRow () {
+    for (var i = 0; i < 5; i ++) {
+      markCell('', i, '?')
     }
-    document.getElementById('game_table').innerHTML = 'test';
+  }
+
+  
+  function markCell (css, num, letter) {
+    var cell = document.getElementById('c' + state + num);
+    cell.className = cell.className + ' ' + css;
+    cell.innerHTML = letter;
+  }
+
+  function initTable () {
+    for (var i = 0; i < 5; i++) {
+      for (var j = 0; j < 5; j++) {
+        var cell = document.getElementById('c' + i + j)
+        cell.className = 'game_cell';
+        cell.innerHTML = '';
+      }
+    }
   }
 
 </script>
