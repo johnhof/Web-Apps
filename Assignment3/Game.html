@@ -4,46 +4,119 @@
 <title>Lingo</title>
 
 <script type="text/javascript" src="./Core/Frontend/Helpers.js"></script>
+<script type="text/javascript" src="./Core/Frontend/Timer.js"></script>
 <script type="text/javascript">
 
   document.write(genericBody);
+  
   requestContent('gamePage', formatResponse);
-
-function gameDriver(){
-  initTable(5);
-
-}
-
-
-/*---------------------------------------------------------------------------------*/
-/*-- UTILITIES
-/*---------------------------------------------------------------------------------*/
-
-function newGame () { 
-  post('./Core/Backend/GameHandler.php', 'request=new_game', function(){
-    document.getElementById('message').innerHTML = this.response;
- })
-}
-
-function submitGuess () {
-
-}
-
-function initTable (size) {
-  var table = "";
+  
+  state = 0
+  word  = null
+  guess = null
+  turn  = 15
 
 
-  for (var i = 0; i < size; i++) {
-    var row =  '<tr id="r'+i+'">';
-    for (var j = 0; j < size; j++) {
-      var cell = '<td id="c'+i+j+'" class="game_cell"></td>'
-      row = row + cell;
+  /*-- STATE HANDLER ----------------------------------------------------------------*/
+  function advanceState(){    
+    // if the turns were used
+    if (state > 4 && guess !== word) {      
+      return endGame('loss');
     }
-    row = row + '</tr>';
-    table+=row;
+    // if the guess was correct
+    if(state > 0 && guess === word) {       
+      return endGame('win')
+      
+    }
+    // otherwise, progress the game
+    
+    //if a timer is set, clear it
+    if (timer) {
+      timer.reset();
+    }
+    
+    //start timer
+    state++;
   }
-  document.getElementById('game_table').innerHTML = 'test';
-}
+  
+  
+  /*-- GAME INITIALIZATION ----------------------------------------------------------*/
+  function newGame () { 
+    post('./Core/Backend/GameHandler.php', 'request=new_game', function(){
+      document.getElementById('message').innerHTML = this.response;
+      var response =  JSON.parse(this.response)
+      word = response.word
+      
+      initNewGame();
+   })
+  }
+  
+  function initNewGame () {
+    timer.init(turn, updateTime, timeOut);
+    timer.start()    
+  }
+  
+  /*-- GAME TERMINATING--- ----------------------------------------------------------*/
+  function endGame (wOrL){
+    if(wOrL === 'win') {
+      post('./Core/Backend/GameHandler.php', 'request=mark_win', null)      
+      var result = '<div class="message_header">Congratulations, you won!</div><br>';
+      //update db
+    }
+    else {
+      var result = '<div class="message_header">I\'m Sorry, the word was: ' + word + '</div><br>';
+      //update db
+    }
+    
+    post('./Core/Backend/GameHandler.php', 'request=get_stats', function(){
+      document.getElementById('message').innerHTML = this.response;
+      var response =  JSON.parse(this.response)
+        , won    = response.won
+        , played = response.played
+        , lost   = played - won
+        , stats  = 'Games won: ' + won + '<br>Games lost: ' + lost + '<br>Games played: ' + played;
+      
+      displayMessage(result + '<div class="message_subtext">Here are your stats:<br>' + stats + '</div>');
+    })
+  }
+  
+  /*-- TIMER CALLBACKS --------------------------------------------------------------*/
+  
+  function updateTime(time){
+      displayMessage('<div class="message_header">Time To Guess</div><br><div class="message_subtext">' + time + '</div>');
+  }
+  
+  function timeOut(){
+    advanceState();
+  }
+
+  /*---------------------------------------------------------------------------------*/
+  /*-- GAME UTILITIES
+  /*---------------------------------------------------------------------------------*/
+  function submitGuess () {
+
+  }
+  
+  function displayMessage (msg) {
+    document.getElementById('message').className = 'message'
+    document.getElementById('message').innerHTML = msg;    
+  }
+
+  function initTable (size) {
+    var table = "";
+
+
+    for (var i = 0; i < size; i++) {
+      var row =  '<tr id="r'+i+'">';
+      for (var j = 0; j < size; j++) {
+        var cell = '<td id="c'+i+j+'" class="game_cell"></td>'
+        row = row + cell;
+      }
+      row = row + '</tr>';
+      table+=row;
+    }
+    document.getElementById('game_table').innerHTML = 'test';
+  }
 
 </script>
 </html>

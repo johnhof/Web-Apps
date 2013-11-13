@@ -34,8 +34,8 @@ function post (url, params, callback) {
 
   httpRequest.open('POST', url, true);
   httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-  httpRequest.setRequestHeader("Content-length", params.length);
-  httpRequest.setRequestHeader("Connection", "close");
+  // httpRequest.setRequestHeader("Content-length", params.length);
+  // httpRequest.setRequestHeader("Connection", "close");
 
   httpRequest.onreadystatechange = callback;
 
@@ -43,9 +43,12 @@ function post (url, params, callback) {
 
 }
 
-function formatResponse(callback){
-  console.log(this)
-
+function formatResponse (response, callback) {
+  if(!this.response) {
+    if(typeof(callback) == "function")  return callback(null);
+    else return null;
+  }
+  
   if (this.response.match(/xdebug-error xe-notice/)) {
    document.write(this.response);
  }
@@ -65,7 +68,10 @@ function formatResponse(callback){
     msg.className  = 'message';
   }
 
-  if(callback) return callback();
+  if(callback) {
+    if(typeof(callback) == "function")  return callback(null);
+    else return null;
+  }
 }
 
 

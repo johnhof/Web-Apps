@@ -113,3 +113,10 @@ input {
   cursor: hand; 
   font: bold 15px Arial;  
 }
+
+.message_header {
+  font: bold 20px arial;
+}
+.message_subtext {
+  font: bold 17px arial;
+}
