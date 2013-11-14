@@ -43,6 +43,7 @@ input {
   border-bottom: 2px solid #C4C4C4;
   border-radius: 2px;
   display: inline-block;
+  box-shadow: 0px 1px 5px rgb(162, 162, 162);
 }
 
 .heading {
@@ -79,6 +80,7 @@ input {
 .game_table {
   border-spacing: 1px 1px;
   border-collapse: collapse;
+  padding-right: 4px;
 }
 
 .game_cell {
@@ -100,6 +102,15 @@ input {
   color:blue;
 }
 
+.create_fields {
+  text-align: right;
+  margin-right: 5%;
+}
+
+.login_fields {
+  text-align: right;
+}
+
 .false_button {
   margin:10px;
   border-radius: 2px;
@@ -111,6 +122,46 @@ input {
   border-bottom: 2px solid #CCCCCC;
   cursor: pointer; 
   cursor: hand; 
+  font: bold 15px Arial;  
+}
+
+.false_button_danger {
+  margin:10px;
+  border-radius: 2px;
+  text-decoration: none;
+  background-color: #9E3737;
+  color: #F2F2F2;
+  padding: 2px 6px 2px 6px;
+  border: 1px solid #CCCCCC;
+  border-bottom: 2px solid #CCCCCC;
+  cursor: pointer; 
+  cursor: hand; 
+  font: bold 15px Arial;  
+}
+.false_button_good {
+  margin:10px;
+  border-radius: 2px;
+  text-decoration: none;
+  background-color: #69DB69;
+  color: #444445;
+  padding: 2px 6px 2px 6px;
+  border: 1px solid #CCCCCC;
+  border-bottom: 2px solid #CCCCCC;
+  cursor: pointer; 
+  cursor: hand; 
+  font: bold 15px Arial;  
+}
+
+.false_button_inactive {
+  margin:10px;
+  border-radius: 2px;
+  text-decoration: none;
+  background-color: #CCCCCC;
+  color: #444445;
+  padding: 2px 6px 2px 6px;
+  border: 1px solid #CCCCCC;
+  border-bottom: 2px solid #CCCCCC;
+  cursor: default; 
   font: bold 15px Arial;  
 }
 
@@ -140,9 +191,13 @@ input {
   background-color: #CCCCCC;
 }
 
-.row_marker {
+.active {
   background-color: #7FD46E;
-  width: 2px;
+  width: 1px;
   height: 50px;
-  margin-right: 70px;
+}
+
+.turn_marker {
+  width: 1px;
+  height: 50px;
 }

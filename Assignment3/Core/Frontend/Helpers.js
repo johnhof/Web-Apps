@@ -51,10 +51,10 @@ function formatResponse (response, callback) {
    document.write(this.response);
  }
 
-  var response = eval('('+this.response+')');
+  var response = eval('(' + this.response + ')');
 
   if(response.redirect){
-    document.write('<script type="text/javascript">window.location = "'+response.redirect+'"</script>');
+    document.write('<script type="text/javascript">window.location = "' + response.redirect +' "</script>');
   }
 
   document.getElementById('heading').innerHTML = response.heading;
