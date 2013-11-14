@@ -22,6 +22,10 @@
   function advanceState (guessed){    
     var upperGuess = guess ? guess.toUpperCase() : guess
       , upperWord  = word ? word.toUpperCase() : word;
+      
+    if(!guessed) {
+      timeOutRow();
+    }
     
     // if the turns were used
     if (state > 3 && upperGuess !== upperWord) {      
@@ -31,10 +35,6 @@
     if(state >= 0 && upperGuess === upperWord) {       
       return endGame('win')
     }   
-      
-    if(!guessed) {
-      timeOutRow();
-    }
     
     //if a timer is set, clear it
     if (timer) {
@@ -43,7 +43,8 @@
     
     //mark the next row as the start
     state++;
-    document.getElementById('c' + state+ + 0).innerHTML = '<div class="row_marker"><div>';    
+    document.getElementById('c' + (state-1) + '-1').className = 'turn_marker';   
+    document.getElementById('c' + state + '-1').className = 'turn_marker active';    
   }
     
   function submitGuess () {
@@ -96,14 +97,23 @@
     state = 0;
     initTable();
     timer.init(turn, updateTime, timeOut);
-    document.getElementById('c' + state+ + 0).innerHTML = '<div class="row_marker"><div>';  
+    markCell('right_location', 0, word[0].toUpperCase());   
+    document.getElementById('c' + state + '-1').className = 'turn_marker active';    
+    document.getElementById('submit_guess').className = 'false_button_good'; 
+    document.getElementById('quit_button').className = 'false_button_danger';   
+    document.getElementById('new').className = 'false_button_danger';   
     timer.start()    
   }
   
   /*-- GAME TERMINATING--- ----------------------------------------------------------*/
   function endGame (wOrL){
     timer.stop();
-    console.log(wOrL)
+    
+    document.getElementById('c' + (state) + '-1').className = 'turn_marker';   
+    document.getElementById('submit_guess').className = 'false_button_inactive'; 
+    document.getElementById('quit_button').className = 'false_button';   
+    document.getElementById('new').className = 'false_button';   
+    
     if(wOrL === 'win') {
       post('./Core/Backend/GameHandler.php', 'request=mark_win', null)      
       var result = '<div class="message_header">Congratulations, you won!</div><br>';
@@ -147,14 +157,14 @@
   
   function timeOutRow () {
     for (var i = 0; i < 5; i ++) {
-      markCell('', i, '?')
+      markCell('wrong_letter', i, '?')
     }
   }
 
   
   function markCell (css, num, letter) {
     var cell = document.getElementById('c' + state + num);
-    cell.className = cell.className + ' ' + css;
+    cell.className = 'game_cell ' + css;
     cell.innerHTML = letter;
   }
 
