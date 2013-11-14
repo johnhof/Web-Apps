@@ -9,36 +9,33 @@ function destroySession (callback) {
 
 function post (url, params, callback) {
   if (window.XMLHttpRequest) { 
-    var httpRequest = new XMLHttpRequest();
+    var req = new XMLHttpRequest();
 
-    if (httpRequest.overrideMimeType) {
-      httpRequest.overrideMimeType('text/xml');
+    if (req.overrideMimeType) {
+      req.overrideMimeType('text/xml');
     }
   }
   else if (window.ActiveXObject) { 
     try {
-      httpRequest = new ActiveXObject("Msxml2.XMLHTTP");
+      req = new ActiveXObject("Msxml2.XMLHTTP");
     }
     catch (e) {
       try {
-          httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+          req = new ActiveXObject("Microsoft.XMLHTTP");
       }
       catch (e) {}
     }
   }
 
-  if(!httpRequest){
+  if(!req){
     alert("Could not create HTTP request");
     return false;
   }
 
-  httpRequest.open('POST', url, true);
-  httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-  httpRequest.onreadystatechange = callback;
-
-  httpRequest.send(params);
-
+  req.open('POST', url, true);
+  req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  req.onreadystatechange = callback;
+  req.send(params);
 }
 
 function formatResponse (response, callback) {

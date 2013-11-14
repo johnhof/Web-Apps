@@ -10,6 +10,9 @@ $forgot    = getValue('post', 'forgot');
 $status_in = getValue('session', 'logged_In');
 $userEmail = getValue('session', 'email');
 
+//sanitize inputs
+$userEmail = str_replace('"', '', $userEmail);
+$userEmail = str_replace("'", '', $userEmail);
 
 if ($status_in && $userEmail) {
   $response = array();

@@ -43,8 +43,7 @@
     
     //mark the next row as the start
     state++;
-    document.getElementById('c' + (state-1) + '-1').className = 'turn_marker';   
-    document.getElementById('c' + state + '-1').className = 'turn_marker active';    
+    updateTurnMarker()
   }
     
   function submitGuess () {
@@ -86,22 +85,20 @@
     post('./Core/Backend/GameHandler.php', 'request=new_game', function(){
       document.getElementById('message').innerHTML = this.response;
       var response =  JSON.parse(this.response)
-      word = response.word
-      console.log(word)
-      
+      word = response.word      
       initNewGame();
    })
   }
   
   function initNewGame () {
     state = 0;
+    
     initTable();
     timer.init(turn, updateTime, timeOut);
     markCell('right_location', 0, word[0].toUpperCase());   
-    document.getElementById('c' + state + '-1').className = 'turn_marker active';    
-    document.getElementById('submit_guess').className = 'false_button_good'; 
-    document.getElementById('quit_button').className = 'false_button_danger';   
-    document.getElementById('new').className = 'false_button_danger';   
+    setPlaying(true);  
+    updateTurnMarker();
+    
     timer.start()    
   }
   
@@ -109,10 +106,7 @@
   function endGame (wOrL){
     timer.stop();
     
-    document.getElementById('c' + (state) + '-1').className = 'turn_marker';   
-    document.getElementById('submit_guess').className = 'false_button_inactive'; 
-    document.getElementById('quit_button').className = 'false_button';   
-    document.getElementById('new').className = 'false_button';   
+    setPlaying(false);
     
     if(wOrL === 'win') {
       post('./Core/Backend/GameHandler.php', 'request=mark_win', null)      
@@ -147,6 +141,31 @@
   /*---------------------------------------------------------------------------------*/
   /*-- GAME UTILITIES
   /*---------------------------------------------------------------------------------*/
+  
+  function setPlaying(playing){
+    if(playing){
+      document.getElementById('submit_guess').className = 'false_button_good'; 
+      document.getElementById('quit_button').className = 'false_button_danger';   
+      document.getElementById('new').className = 'false_button_danger';       
+    }
+    else{
+      document.getElementById('c' + (state) + '-1').className = 'turn_marker';   
+      document.getElementById('submit_guess').className = 'false_button_inactive'; 
+      document.getElementById('quit_button').className = 'false_button';   
+      document.getElementById('new').className = 'false_button';   
+    }
+  }
+  
+  function updateTurnMarker(){
+    resetTurnMarkers();
+    document.getElementById('c' + state + '-1').className = 'turn_marker active';        
+  }
+  
+  function resetTurnMarkers(){
+    for(var i = 0; i < 5; i++){
+      document.getElementById('c' + i + '-1').className = 'turn_marker';   
+    }    
+  }
   
   function displayMessage (msg) {
     document.getElementById('message').className = 'message';

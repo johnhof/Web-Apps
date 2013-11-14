@@ -15,6 +15,18 @@ $name      = getValue('post', 'name');
 $status_in = getValue('session', 'logged_In');
 
 
+//sanitize inputs
+$email = str_replace('"', '', $email);
+$email = str_replace("'", '', $email);
+
+//sanitize inputs
+$password = str_replace('"', '', $password);
+$password = str_replace("'", '', $password);
+
+//sanitize inputs
+$name = str_replace('"', '', $name);
+$name = str_replace("'", '', $name);
+
 // determine the requested page
 if ($req){
 
