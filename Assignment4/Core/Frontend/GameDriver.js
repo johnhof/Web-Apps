@@ -1,18 +1,4 @@
-/*
-```
-#POST:
-  ```javascript
-    form {
-      'request'='user_state'
-    }
-  ```
-``
-  
-```
-#GET REQUESTS
-```
 
-*/
 
 function setupInstance () {
   console.log(arguments);
