@@ -13,6 +13,7 @@ returns
 */
 function queueXml ($msg) {
   $queue = new SimpleXMLElement('<xml/>');
+  
   $content = $queue->addChild('content');
   $content->addChild('subTitle', "Looking for an Opponent");
   $content->addChild('img', "./Core/Images/loading.gif");
@@ -37,7 +38,9 @@ returns
 */
 function coreGameXml ($state, $msg) {
   $xml = new SimpleXMLElement('<xml/>');
+  
   $xml->addChild('game-img', "./Core/Images/.".$state."_wrong.png");
+  
   addMessage($xml, $msg);
   return $xml;
 }
@@ -49,7 +52,7 @@ params
   xml     : SimpleXMLElement
   word    : []
   guessed : []
-  maker   : boolean
+  maker   : bool
 
 returns
   xml appended with letter cells
@@ -78,6 +81,36 @@ function guessXml ($xml, $word, $guessed, $maker){
   }
   return $xml;
 }
+/*
+gamOverXml
+params
+  word    : ''
+  guessed : bool
+  wins    : #
+  total   : #
+  msg     : ''
+  
+returns
+  xml for universal game over
+*/
+function gamOverXml ($word, $guessed, $wins, $total, $msg) {
+  $xml = new SimpleXMLElement('<xml/>');
+ 
+  $xml->addChild('final-result', $guessed);
+  $xml->addChild('word', $word);
+  $xml->addChild('wins', $wins);
+  $xml->addChild('losses', $total - $wins);
+  $xml->addChild('total', $total);
+  
+  $xml = addButton($xml, 'rematch', 'green', 'Play Again', 'rematch()');
+  
+  $buttonSeparator = $xml->addChild('buttonSeparator');
+  $buttonSeparator = addButton($buttonSeparator, 'queue', 'grey', 'Return to Queue', 'queue()');
+  $buttonSeparator = addButton($buttonSeparator, 'home', 'grey', 'Return Home', 'home()');
+  
+  addMessage($xml, $msg);
+  return $xml;
+}
 
 //----  MAKER XML ----------------------------------------------------------------------------
 
@@ -93,6 +126,12 @@ returns
 function makerGenWordXml ($msg){
   $xml = coreGameXml(0, $msg);
   $xml->addChild('subheader', 'Select a word');
+  
+  $xml = addButton($xml, 'setWord', 'green', 'Submit Word', 'setWord()');
+  
+  $buttonSeparator = $xml->addChild('buttonSeparator');
+  $buttonSeparator = addButton($buttonSeparator, 'queue', 'red', 'Return to Queue', 'queue()');
+  $buttonSeparator = addButton($buttonSeparator, 'home', 'red', 'Quit', 'home()');
   
   return $xml;
 }
@@ -111,6 +150,7 @@ returns
 */
 function makerGameXml ($word, $guessed, $state, $msg) {
   $xml = guessXml(coreGameXml($state, $msg), $word, $guessed, true);
+  
   $xml->addChild('subheader', 'The guesser is playing');
   
   return $xml;
@@ -129,7 +169,15 @@ returns
 */
 function guesserGenWordXml ($msg){
   $xml = coreGameXml(0, $msg);
+  
   $xml->addChild('subheader', 'Waiting for a word');
+  
+  $xml = addButton($xml, 'setWord', 'inactive', 'Submit Word', 'setWord()');
+  
+  $buttonSeparator = $xml->addChild('buttonSeparator');
+  $buttonSeparator = addButton($buttonSeparator, 'queue', 'red', 'Return to Queue', 'queue()');
+  $buttonSeparator = addButton($buttonSeparator, 'home', 'red', 'Quit', 'home()');
+  
   return $xml;
 }
 
@@ -146,9 +194,16 @@ returns
   xml for guesser game play
 */
 function guesserGameXml ($word, $guessed, $state, $msg) {
-  $xml->addChild('subheader', (7-$state).' guesses remaining');
+  $xml->addChild('subheader', (7-$state).' changes remaining');
+  
   $xml = guessXml(coreGameXml($state, $msg), $word, $guessed, false);
-  return $queue;
+  $xml = addButton($xml, 'submitGuess', 'green', 'Submit Guess', 'submitGuess()');
+  
+  $buttonSeparator = $xml->addChild('buttonSeparator');
+  $buttonSeparator = addButton($buttonSeparator, 'queue', 'red', 'Return to Queue', 'queue()');
+  $buttonSeparator = addButton($buttonSeparator, 'home', 'red', 'Quit', 'home()');
+  
+  return $xml;
 }
 
 //----  BUTTON FORMATTING --------------------------------------------------------------------
@@ -167,11 +222,36 @@ returns
   xml with button of the requested properties added
 */
 function addButton ($xml, $name, $color, $value, $function) {
-  $letterBox = $xml->addChild($name, $letter);  
-  $letterBox->addAttribute('class', 'standard_input false_button '.$color);
-  $letterBox->addAttribute('name', $name);
-  $letterBox->addAttribute('value', $value);
-  $letterBox->addAttribute('onclick', $function);
+  $button = $xml->addChild($name, $letter);  
+  
+  $button->addAttribute('class', 'standard_input false_button '.$color);
+  $button->addAttribute('name', $name);
+  $button->addAttribute('value', $value);
+  $button->addAttribute('onclick', $function);
+  
+  return $xml;
+}
+
+//----  TEXTFIELD FORMATTING -----------------------------------------------------------------
+
+/*
+addTextField
+
+params
+  xml      : SimpleXMLElement
+  name     : ''
+  value    : ''
+  
+returns
+  xml with textField of the requested properties added
+*/
+function addTextField ($xml, $name, $value) {
+  $textField = $xml->addChild($name, $letter);  
+  
+  $textField->addAttribute('class', 'standard_input text_field');
+  $textField->addAttribute('name', $name);
+  $textField->addAttribute('placeholder', $value);
+  
   return $xml;
 }
 
@@ -187,11 +267,3 @@ function addMessage ($xml, $msg) {
 }
 
 ?>
-
-'<input type="button" id="new" name="new" class="false_button" value="Try a new word" onclick="newGame()"/></br>'
-                      .'<div id="guess_box" class="guess_box">'
-                        .'Enter Guess: '
-                        .'<input type="text" id="guess" name="guess"/>'
-                        .'<input type="button" id="submit_guess" name="submit_guess" value="Submit" class="false_button_inactive" onclick="submitGuess()"/>'
-                      .'</div></br>'
-                      .'<a href="./Home.html" id="quit_button" class="false_button">Quit</a>';
