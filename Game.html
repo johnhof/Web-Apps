@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<link rel="stylesheet" type="text/css" href="rsc.css" media="screen" />
+<title>Lingo</title>
+
+<script type="text/javascript" src="./Core/Frontend/Helpers.js"></script>
+<script type="text/javascript" src="./Core/Frontend/Timer.js"></script>
+<script type="text/javascript">
+
+  document.write(genericBody);
+  
+  requestContent('gamePage', formatResponse);
+  
+  state = 0
+  word  = null
+  guess = '-----'
+  turn  = 15
+
+
+  /*-- STATE HANDLER ----------------------------------------------------------------*/
+  
+  function advanceState (guessed){    
+    var upperGuess = guess ? guess.toUpperCase() : guess
+      , upperWord  = word ? word.toUpperCase() : word;
+      
+    if(!guessed) {
+      timeOutRow();
+    }
+    
+    // if the turns were used
+    if (state > 3 && upperGuess !== upperWord) {      
+      return endGame('loss');
+    }
+    // if the guess was correct
+    if(state >= 0 && upperGuess === upperWord) {       
+      return endGame('win')
+    }   
+    
+    //if a timer is set, clear it
+    if (timer) {
+      timer.reset();
+    }
+    
+    //mark the next row as the start
+    state++;
+    document.getElementById('c' + (state-1) + '-1').className = 'turn_marker';   
+    document.getElementById('c' + state + '-1').className = 'turn_marker active';    
+  }
+    
+  function submitGuess () {
+      
+    guess = document.getElementById('guess').value;
+    
+    if(state >= 0 && state < 5) {
+      
+      for (var i = 0; i < 5; i++) {
+        
+        if(!guess[i]) {
+          var letter = ' ';
+        }
+        else {
+          letter = guess[i].toUpperCase();
+        }
+        
+        
+        if(letter === word[i].toUpperCase()){
+          markCell('right_location', i, letter);
+        }
+        else if (word.toUpperCase().indexOf(letter) >= 0) {
+          markCell('wrong_location', i, letter);        
+        }
+        else {
+          markCell('wrong_letter', i, letter.toLowerCase());
+        }
+      }
+    
+    document.getElementById('guess').value = "";
+    advanceState(true);
+    }
+    document.getElementById('guess').value = "";
+  }
+  
+  
+  /*-- GAME INITIALIZATION ----------------------------------------------------------*/
+  function newGame () { 
+    post('./Core/Backend/GameHandler.php', 'request=new_game', function(){
+      document.getElementById('message').innerHTML = this.response;
+      var response =  JSON.parse(this.response)
+      word = response.word
+      console.log(word)
+      
+      initNewGame();
+   })
+  }
+  
+  function initNewGame () {
+    state = 0;
+    initTable();
+    timer.init(turn, updateTime, timeOut);
+    markCell('right_location', 0, word[0].toUpperCase());   
+    document.getElementById('c' + state + '-1').className = 'turn_marker active';    
+    document.getElementById('submit_guess').className = 'false_button_good'; 
+    document.getElementById('quit_button').className = 'false_button_danger';   
+    document.getElementById('new').className = 'false_button_danger';   
+    timer.start()    
+  }
+  
+  /*-- GAME TERMINATING--- ----------------------------------------------------------*/
+  function endGame (wOrL){
+    timer.stop();
+    
+    document.getElementById('c' + (state) + '-1').className = 'turn_marker';   
+    document.getElementById('submit_guess').className = 'false_button_inactive'; 
+    document.getElementById('quit_button').className = 'false_button';   
+    document.getElementById('new').className = 'false_button';   
+    
+    if(wOrL === 'win') {
+      post('./Core/Backend/GameHandler.php', 'request=mark_win', null)      
+      var result = '<div class="message_header">Congratulations, you won!</div><br>';
+    }
+    else {
+      result = '<div class="message_header">I\'m Sorry, the word was: ' + word + '</div><br>';
+    }
+    
+    post('./Core/Backend/GameHandler.php', 'request=get_stats', function(){
+      document.getElementById('message').innerHTML = this.response;
+      var response =  JSON.parse(this.response)
+        , won    = response.won
+        , played = response.played
+        , lost   = played - won
+        , stats  = 'Games won: ' + won + '<br>Games lost: ' + lost + '<br>Games played: ' + played;
+      
+      displayMessage(result + '<div class="message_subtext">Here are your stats:<br>' + stats + '</div>');
+    })
+  }
+  
+  /*-- TIMER CALLBACKS --------------------------------------------------------------*/
+  
+  function updateTime(time){
+      displayMessage('<div class="message_header">Time To Guess</div><br><div class="message_subtext">' + time + '</div>');
+  }
+  
+  function timeOut(){
+    advanceState();
+  }
+
+  /*---------------------------------------------------------------------------------*/
+  /*-- GAME UTILITIES
+  /*---------------------------------------------------------------------------------*/
+  
+  function displayMessage (msg) {
+    document.getElementById('message').className = 'message';
+    document.getElementById('message').innerHTML = msg;    
+  }
+  
+  /*-- TABLE MANAGEMENT -------------------------------------------------------------*/
+  
+  function timeOutRow () {
+    for (var i = 0; i < 5; i ++) {
+      markCell('wrong_letter', i, '?')
+    }
+  }
+
+  
+  function markCell (css, num, letter) {
+    var cell = document.getElementById('c' + state + num);
+    cell.className = 'game_cell ' + css;
+    cell.innerHTML = letter;
+  }
+
+  function initTable () {
+    for (var i = 0; i < 5; i++) {
+      for (var j = 0; j < 5; j++) {
+        var cell = document.getElementById('c' + i + j)
+        cell.className = 'game_cell';
+        cell.innerHTML = '';
+      }
+    }
+  }
+
+</script>
+</html>

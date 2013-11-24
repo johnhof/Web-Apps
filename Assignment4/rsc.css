@@ -7,28 +7,35 @@
 
 html {
   background-color: #F2F2F2;
+  height: 100%;
+  width: 100%; 
 }
 
 body {    
   text-align: center; 
-  font-family: arial;  
-  font: bold 15px Arial; 
+  font-family: 'Helvetica Neue', Helvetica, Arial, 'lucida grande',tahoma,verdana,arial,sans-serif;
+  font-weight: bold;
+  font: 15px; 
   height: 100%;
   width: 100%; 
 }
 h1 {  
   padding:0px;
   margin: 0px;
-  color: #4C4C4D;       
+  color: #4C4C4D; 
+  font-size: 50px;      
 }
 h2 {
   padding: 0px;
   margin: 0px;
+  color: #4C4C4D;    
+  font-size: 40px; 
 }
 h3 {
   padding: 0px;
   margin: 0px;
-  font: bold 18px Arial;  
+  font: 18px;  
+  font-size: 30px; 
 }
 
 input {
@@ -47,22 +54,16 @@ input {
   color: #636363;
   border-bottom: 2px solid #C4C4C4;
   border-radius: 2px;
-  height: 60%;
-  width: 50%;
+  padding: 50px;
   display: inline-block;
   box-shadow: 0px 1px 5px rgb(162, 162, 162);
 }
 
 .heading {
-  margin-top: 5px;
-  padding-top: 5px;
-  padding: 30px;
-  border-bottom: 1px solid #DEDEDE;
-  font: bold 20px Arial;  
+  padding-bottom: 25px;
 }
 
 .content {
-  padding: 50px;
 }
 
 .message {
@@ -76,7 +77,7 @@ input {
   border-radius: 2px;
   width: 50%;
   display: inline-block; 
-  font: bold 12px Arial; 
+  font: 12px; 
 }
 
 
@@ -98,7 +99,7 @@ input {
 }
 
 .subtext {
-  font: 10px arial;
+  font: 10px;
   background:none;
   border:none;
 }
@@ -120,19 +121,24 @@ input {
   width: 260px;
 }
 
-.false_button {
-  margin:10px;
-  border-radius: 3px;
-  text-decoration: none;
-  background-image: linear-gradient(#5CB6C2, #669BB9);
+.false_button {  
   color: #FDFDFD;
-  padding: 2px 6px 2px 6px;
-  border: 0.5px solid #4C5CB5;
+  
+  border-radius: 3px;
+  border: 1px solid;
+  
   cursor: pointer; 
   cursor: hand; 
-  font: bold 15px Arial;  
-  display: inline-block;
-  vertical-align:middle;
+}
+.false_button:active {
+  border: 1px solid #888484;  
+  border-radius: 3px;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.075),0 0 12px rgba(153, 151, 151, 0.75);
+}
+
+.fill {
+  width: 100%;
+  height: 100%;
 }
 
 .red {
@@ -140,8 +146,20 @@ input {
   color: #F2F2F2;  
 }
 .green {
-  background-color: #69DB69;
-  color: #444445;
+  background-image: linear-gradient(#8add6d, #60b044);
+  background-repeat: repeat-x;
+  border: 1px solid #5ca941;
+}
+.blue {
+  background-image:  linear-gradient(#54BEAD, #3D98A0);
+  background-repeat: repeat-x;
+  border: 1px solid #6194B1;  
+}
+.grey {
+  background-image: linear-gradient(#F5F5F5, #D3D5D2);
+  background-repeat: repeat-x;
+  border: 1px solid #C2BFBF;
+  color: #535151;
 }
 
 .inactive {
@@ -154,29 +172,67 @@ input {
 }
 
 .standard_input {
-  width: 90%;
-  padding: 5px;
-  margin: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   clear: left;
+  border-radius: 3px; 
+  width: 100%;
+  font-family: 'Helvetica Neue', Helvetica, Arial, 'lucida grande',tahoma,verdana,arial,sans-serif;
+  font-weight: bold;
+  font-size: 15px;
+  text-decoration: none;
+  display: inline-block;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  vertical-align: middle;
+
+}
+
+.standard_input:hover {
+ -khtml-opacity:.90; 
+ -moz-opacity:.90; 
+ -ms-filter:"alpha(opacity=90)";
+  filter:alpha(opacity=90);
+  filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0.9);
+  opacity:.90; 
+}
+
+.standard_input:focus {
+  outline: none;
   border-radius: 3px;
-  border: 1px solid #CCCCCC;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.075),0 0 12px rgba(153, 151, 151, 0.75);
 }
 
 .text_field {
-  padding-left:10px;
-  color: #979696;
+  padding-left: 3%;
+  padding-right: 3%;
+  width: 94%;
+  color: #535151;
+  border: 1px solid #CCCCCC;
 }
 
 .main_form {
-  width: 70%;
+  width: 300px;
   margin: auto;
 }
 
 .message_header {
-  font: bold 20px arial;
+  font: 20px;
 }
 .message_subtext {
-  font: bold 17px arial;
+  font: 17px;
+}
+
+.split {
+  width: 48%;
+}
+
+.split.left {
+  float: left;
+}
+
+.split.right {
+  float: right;
 }
 
 /*---------------------------------------------------------------------------------*/
