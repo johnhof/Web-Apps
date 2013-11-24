@@ -2,7 +2,7 @@
 
 //----  QUEUEING XML -------------------------------------------------------------------------
 
-/* ```
+/*
 queueXml
 
 params
@@ -10,7 +10,7 @@ params
   
 returns
   xml for queue state
-``` */
+*/
 function queueXml ($msg) {
   $queue = new SimpleXMLElement('<xml/>');
   $content = $queue->addChild('content');
@@ -25,7 +25,7 @@ function queueXml ($msg) {
 
 //----  CORE GAME XML ------------------------------------------------------------------------
 
-/* ```
+/*
 coreGameXml
 
 params
@@ -34,7 +34,7 @@ params
   
 returns
   xml for base game play
-``` */
+*/
 function coreGameXml ($state, $msg) {
   $xml = new SimpleXMLElement('<xml/>');
   $xml->addChild('game-img', "./Core/Images/.".$state."_wrong.png");
@@ -42,7 +42,7 @@ function coreGameXml ($state, $msg) {
   return $xml;
 }
 
-/* ```
+/*
 guessXml
 
 params
@@ -53,7 +53,7 @@ params
 
 returns
   xml appended with letter cells
-``` */
+*/
 function guessXml ($xml, $word, $guessed, $maker){
   foreach ($word as $index => $letter) {
     
@@ -81,7 +81,7 @@ function guessXml ($xml, $word, $guessed, $maker){
 
 //----  MAKER XML ----------------------------------------------------------------------------
 
-/* ```
+/*
 makerGenWordXml
 
 params
@@ -89,7 +89,7 @@ params
 
 returns
   xml for maker word selection
-``` */
+*/
 function makerGenWordXml ($msg){
   $xml = coreGameXml(0, $msg);
   $xml->addChild('subheader', 'Select a word');
@@ -97,7 +97,7 @@ function makerGenWordXml ($msg){
   return $xml;
 }
 
-/* ```
+/*
 makerGameXml
 
 params
@@ -108,7 +108,7 @@ params
   
 returns
   xml for maker game play
-``` */
+*/
 function makerGameXml ($word, $guessed, $state, $msg) {
   $xml = guessXml(coreGameXml($state, $msg), $word, $guessed, true);
   $xml->addChild('subheader', 'The guesser is playing');
@@ -118,7 +118,7 @@ function makerGameXml ($word, $guessed, $state, $msg) {
 
 //----  GUESSER XML --------------------------------------------------------------------------
 
-/* ```
+/*
 guesserGenWordXml
 
 params
@@ -126,14 +126,14 @@ params
   
 returns
   xml for guesser wating for word selection
-``` */
+*/
 function guesserGenWordXml ($msg){
   $xml = coreGameXml(0, $msg);
   $xml->addChild('subheader', 'Waiting for a word');
   return $xml;
 }
 
-/* ```
+/*
 guesserGameXml
 
 params
@@ -144,7 +144,7 @@ params
   
 returns
   xml for guesser game play
-``` */
+*/
 function guesserGameXml ($word, $guessed, $state, $msg) {
   $xml->addChild('subheader', (7-$state).' guesses remaining');
   $xml = guessXml(coreGameXml($state, $msg), $word, $guessed, false);
@@ -153,7 +153,7 @@ function guesserGameXml ($word, $guessed, $state, $msg) {
 
 //----  BUTTON FORMATTING --------------------------------------------------------------------
 
-/* ```
+/*
 addButton
 
 params
@@ -165,7 +165,7 @@ params
   
 returns
   xml with button of the requested properties added
-``` */
+*/
 function addButton ($xml, $name, $color, $value, $function) {
   $letterBox = $xml->addChild($name, $letter);  
   $letterBox->addAttribute('class', 'standard_input false_button '.$color);
