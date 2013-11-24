@@ -6,12 +6,15 @@
 
 
 html {
-  background-color: #D9D9DB;
+  background-color: #F2F2F2;
 }
+
 body {    
   text-align: center; 
   font-family: arial;  
-  font: bold 15px Arial;  
+  font: bold 15px Arial; 
+  height: 100%;
+  width: 100%; 
 }
 h1 {  
   padding:0px;
@@ -31,6 +34,8 @@ h3 {
 input {
   clear: left;
   margin-right: 0px;
+  border-radius: 3px;
+  border: 1px solid #CCCCCC;
 }
 
 /*---------------------------------------------------------------------------------*/
@@ -38,10 +43,12 @@ input {
 /*---------------------------------------------------------------------------------*/
 
 .main {
-  background-color: #F2F2F2;  
+  background-color: #F8F8F8;  
   color: #636363;
   border-bottom: 2px solid #C4C4C4;
   border-radius: 2px;
+  height: 60%;
+  width: 50%;
   display: inline-block;
   box-shadow: 0px 1px 5px rgb(162, 162, 162);
 }
@@ -49,14 +56,13 @@ input {
 .heading {
   margin-top: 5px;
   padding-top: 5px;
-  padding-right: 15px;
-  padding-left: 15px;
-  border-bottom: 1px solid #CCCCCC;
+  padding: 30px;
+  border-bottom: 1px solid #DEDEDE;
   font: bold 20px Arial;  
 }
 
 .content {
-  padding: 20px;
+  padding: 50px;
 }
 
 .message {
@@ -68,6 +74,7 @@ input {
   color: #4F1B21;
   border-bottom: 2px solid #C4C4C4;
   border-radius: 2px;
+  width: 50%;
   display: inline-block; 
   font: bold 12px Arial; 
 }
@@ -109,60 +116,60 @@ input {
 
 .login_fields {
   text-align: right;
+  margin: auto;
+  width: 260px;
 }
 
 .false_button {
   margin:10px;
-  border-radius: 2px;
+  border-radius: 3px;
   text-decoration: none;
-  background-color: #788BF5;
-  color: #444445;
+  background-image: linear-gradient(#5CB6C2, #669BB9);
+  color: #FDFDFD;
   padding: 2px 6px 2px 6px;
-  border: 1px solid #CCCCCC;
-  border-bottom: 2px solid #CCCCCC;
+  border: 0.5px solid #4C5CB5;
   cursor: pointer; 
   cursor: hand; 
   font: bold 15px Arial;  
+  display: inline-block;
+  vertical-align:middle;
 }
 
-.false_button_danger {
-  margin:10px;
-  border-radius: 2px;
-  text-decoration: none;
+.red {
   background-color: #9E3737;
-  color: #F2F2F2;
-  padding: 2px 6px 2px 6px;
-  border: 1px solid #CCCCCC;
-  border-bottom: 2px solid #CCCCCC;
-  cursor: pointer; 
-  cursor: hand; 
-  font: bold 15px Arial;  
+  color: #F2F2F2;  
 }
-.false_button_good {
-  margin:10px;
-  border-radius: 2px;
-  text-decoration: none;
+.green {
   background-color: #69DB69;
   color: #444445;
-  padding: 2px 6px 2px 6px;
-  border: 1px solid #CCCCCC;
-  border-bottom: 2px solid #CCCCCC;
-  cursor: pointer; 
-  cursor: hand; 
-  font: bold 15px Arial;  
 }
 
-.false_button_inactive {
+.inactive {
   margin:10px;
-  border-radius: 2px;
-  text-decoration: none;
   background-color: #CCCCCC;
   color: #444445;
-  padding: 2px 6px 2px 6px;
   border: 1px solid #CCCCCC;
   border-bottom: 2px solid #CCCCCC;
   cursor: default; 
-  font: bold 15px Arial;  
+}
+
+.standard_input {
+  width: 90%;
+  padding: 5px;
+  margin: 10px;
+  clear: left;
+  border-radius: 3px;
+  border: 1px solid #CCCCCC;
+}
+
+.text_field {
+  padding-left:10px;
+  color: #979696;
+}
+
+.main_form {
+  width: 70%;
+  margin: auto;
 }
 
 .message_header {

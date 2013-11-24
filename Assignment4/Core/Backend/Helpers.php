@@ -1,9 +1,9 @@
 <?php
 
 if(preg_match('/localhost/','http'.(empty($_SERVER['HTTPS'])?'':'s').'://'.$_SERVER['SERVER_NAME'])){
-  define('HOST', 'http'.(empty($_SERVER['HTTPS'])?'':'s').'://'.$_SERVER['SERVER_NAME'].'/1520/Assignment3/', true);
+  define('HOST', 'http'.(empty($_SERVER['HTTPS'])?'':'s').'://'.$_SERVER['SERVER_NAME'].'/1520/Assignment4/', true);
 }
-else define('HOST', 'http://cs1520.cs.pitt.edu/~jmh162/php/Assignment3/', true);
+else define('HOST', 'http://cs1520.cs.pitt.edu/~jmh162/php/Assignment4/', true);
 
 date_default_timezone_set('America/New_York');
 
