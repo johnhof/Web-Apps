@@ -1,13 +1,11 @@
 #Assignment 4: Hangman
 
-Requests to /Core/Backend/GameHandler.php
-------------------------------------------------
-
 ##User State
 
 ###Request
 ```javascript
 {
+  url : '/Core/Backend/GameHandler.php'
   type: "POST",
   data: {
     'request': 'user_state'
@@ -30,6 +28,7 @@ The Database is querried for user state and appropriate action is taken
 ###Request
 ```javascript
 {
+  url : '/Core/Backend/GameHandler.php'
   type: "POST",
   data: {
     'request': 'enQueue'
@@ -38,7 +37,9 @@ The Database is querried for user state and appropriate action is taken
 ```
 
 ###Response
+```
 'Success'/'Failure'
+```
 
 ------------------------------------------------
 
@@ -47,6 +48,7 @@ The Database is querried for user state and appropriate action is taken
 ###Request
 ```javascript
 {
+  url : '/Core/Backend/GameHandler.php'
   type: "POST",
   data: {
     'request': 'deQueue'
@@ -55,6 +57,7 @@ The Database is querried for user state and appropriate action is taken
 ```
 
 ###Response
+```
 'Success'/'Failure'
-
+```
 -----------------------------------------------
