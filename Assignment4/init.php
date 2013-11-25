@@ -36,6 +36,7 @@
   query("create table Games ("
         ."email_1 char(30) not null, "
         ."email_2 char(30) not null, "
+        ."guesser char(30) not null, "
         ."state int not null default 0, "
         ."guessed char(30) not null default '', "
         ."word char(30) default null, "

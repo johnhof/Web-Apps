@@ -4,6 +4,7 @@ include_once './GameHelpers.php';
 include_once './GameXML.php';
 include_once './Core.php';
 include_once './Queue.php';
+include_once './DBListeners.php';
 
 $req       = getValue('post', 'request');
 $guess     = getValue('post', 'guess');
@@ -15,6 +16,8 @@ $userEmail = getValue('session', 'email');
 $userEmail = str_replace('"', '', $userEmail);
 $guess     = str_replace("'", '', $guess);
 $newWord   = str_replace('"', '', $newWord);
+  error_log($req);
+  error_log($status_in);
 
 if ($status_in && $userEmail) {  
   switch ($req) {
@@ -25,22 +28,43 @@ if ($status_in && $userEmail) {
     case 'rematch'     : handleRematchReq($userEmail, $guess);
     case 'enQueue'     : handleEnQueueReq($userEmail);
     case 'deQueue'     : handleDeQueueReq($userEmail);
+    // long polling requests
+    case 'queued'      : queuedStateReq($userEmail);
+    // case 'guessing'    : guessStateReq($userEmail);
+    // case 'watching'    : watchStateReq($userEmail);
   }
 }
 
-respond(null);
-  
+respond(redirectXml());
   
 function handleStateReq ($email) {
   if (!inGame($email)) {
+    enQueue($email);
     respond(queueXml(''));
   }
-  respond('in game');
-  // if the player is not in a game
-  //   place into the queue and return queue XML
-  
+  respond(null);
   // validate game
   
+    
+  //find who the guesser is
+  $guesser = query('SELECT guesser FROM Games WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
+    
+  if (isGuesser($email)) {
+    if (!isWordselected()) {
+      respond(makerGenWordXml());
+    }
+    else {
+      respond(makerGameXml());
+    }
+  }
+  else {
+    if (!isWordselected()) {
+      respond(guesserGenWordXml());
+    }
+    else {
+      respond(guesserGameXml());
+    }    
+  }
   // if the player is in game and the state is 0-6
   //   if the player is a maker
   //     return maker XML

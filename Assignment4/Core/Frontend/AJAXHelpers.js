@@ -14,7 +14,7 @@ function listen (resCallback) {
     type: "POST",  
     url: "/Core/Backend/GameHandler.php",  
     data: {
-      type: 'listen'
+      request: state
     },
     dataType: "xml",
     async: true,
@@ -33,6 +33,7 @@ function listen (resCallback) {
       }
     }
   }
+  console.log(req)
   
   $.ajax(req);
 }
@@ -70,7 +71,7 @@ function leaveQueue (callback) {
   console.log('making request')
   
   var form = { 
-    request: "user_state" 
+    request: "deQueue" 
   }
-  post = $.post("./Core/Backend/GameHandler.php", form, callback, "xml");
+  post = $.post("./Core/Backend/GameHandler.php", form, callback, "text");
 }

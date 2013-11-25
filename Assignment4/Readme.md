@@ -1,4 +1,4 @@
-#Assignment 4: Hangman
+#Assignment 4: Hangman API
 
 ##User State
 

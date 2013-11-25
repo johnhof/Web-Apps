@@ -17,6 +17,12 @@ function applyXml(xml) {
     , subHeader  = $xml.find('subheading')
     , image      = $xml.find('img')    
     , mainButton = $xml.find('button').first()
+    , script     = $xml.find('script').text()
+    
+  state = type;
+    
+  console.log(script);
+  $('#message').append(script);
   
   // subheading
   applyElement(subHeader, 'h3', 'subheading');
@@ -34,6 +40,8 @@ function applyXml(xml) {
 
   // main form
   applyButton(mainButton);
+  
+  onStateXmlReturn();
 }
 
 /*

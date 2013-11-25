@@ -1,4 +1,5 @@
 <?php 
+session_start(); 
 include_once './Helpers.php';
 include_once './GameHelpers.php';
 include_once './GameXML.php';
@@ -48,6 +49,22 @@ function respond ($response) {
   exit;
 }
 
+function isGuesser ($email) {
+  $guesser = query('SELECT guesser FROM Games WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
+  
+  testQuery($result, 'Failed to retrieve current guesser');
+  
+  if($guesser[0][0] == $email) return true;
+  return false;
+}
+
+function isWordSelected ($email) {
+  $word = query('SELECT guesser FROM Games WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
+  
+  testQuery($result, 'Failed to retrieve current word');
+  
+  return $word[0][0];
+}
 
 
 ?>

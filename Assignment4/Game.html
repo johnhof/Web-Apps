@@ -8,12 +8,26 @@
 <script type="text/javascript" src="./Core/Frontend/XMLHelpers.js"></script>
 <script type="text/javascript" src="./Core/Frontend/JSHelpers.js"></script>
 <script type="text/javascript" src="./Core/Frontend/GameDriver.js"></script>
+<script type="text/javascript" src="./Core/Frontend/ButtonListeners.js"></script>
 <script type="text/javascript">
 
+  var state = '';
   document.write(genericBody);
-  $(document).ready(function () {
-    setupInstance(arguments);
+  
+  $(document).ready(function (res) {
+    if(!res) {
+      window.location = "./Home.html";
+    }
+    
+    getStateXml(applyXml);  
   });
+  
+  function onStateXmlReturn () {
+    console.log('prepping long poll')
+    listen(function (){
+      console.log('------------ response ------------')
+    });
+  }
   
 </script>
 </html>

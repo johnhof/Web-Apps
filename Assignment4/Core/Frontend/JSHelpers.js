@@ -70,6 +70,11 @@ function formatResponse (response, callback) {
 }
 
 
+function updateMessage (msg) {
+  $('#message').empty();
+  $('#message').append('<div class="message">' + msg + '</div>');
+}
+
 var genericBody = '<body>  \
                 <div class="main">\
                   <div class="heading" id="heading"></div>    \

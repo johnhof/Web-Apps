@@ -43,4 +43,7 @@ function enQueue ($email) {
   return 'success';
 }
 
+function pop() {
+}
+
 ?>

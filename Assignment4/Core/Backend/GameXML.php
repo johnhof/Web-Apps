@@ -13,7 +13,7 @@ returns
 function queueXml ($msg) {
   $queue = new SimpleXMLElement('<xml></xml>');
   
-  $content = $queue->addChild('type', 'queue');
+  $content = $queue->addChild('type', 'queued');
   $content = $queue->addChild('content');
   
   $content->addChild('subheading', "Waiting for an Opponent");
@@ -219,6 +219,26 @@ function guesserGameXml ($word, $guessed, $state, $msg) {
   
   Header('Content-type: text/xml');
   return $xml;
+}
+
+//----  REDIRECT XML -------------------------------------------------------------------------
+
+/*
+redirect
+
+params
+  
+returns
+  xml fto redirect
+*/
+function redirectXml () {
+  $xml = new SimpleXMLElement('<xml></xml>');
+  $content = $xml->addChild('type', 'redirect');
+  $content = $xml->addChild('content');
+  $content->addChild('script', '<script type="text/javascript">window.location = "./Home.html";</script>');
+  
+  Header('Content-type: text/xml');
+  return $xml->asXml();
 }
 
 //----  BUTTON FORMATTING --------------------------------------------------------------------
