@@ -72,7 +72,7 @@ function formatResponse (response, callback) {
 
 var genericBody = '<body>  \
                 <div class="main">\
-                  <div class="heading" id="heading" id="heading"></div>    \
+                  <div class="heading" id="heading"></div>    \
                   <div class="content" id="content">\
                     <img src="./Core/Images/loading.gif" alt="Loading..." title="Loading" />\
                   </div>\

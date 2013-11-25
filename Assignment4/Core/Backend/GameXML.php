@@ -1,7 +1,6 @@
 <?php
 
 //----  QUEUEING XML -------------------------------------------------------------------------
-
 /*
 queueXml
 
@@ -12,16 +11,22 @@ returns
   xml for queue state
 */
 function queueXml ($msg) {
-  $queue = new SimpleXMLElement('<xml/>');
+  $queue = new SimpleXMLElement('<xml></xml>');
   
+  $content = $queue->addChild('type', 'queue');
   $content = $queue->addChild('content');
-  $content->addChild('subTitle', "Looking for an Opponent");
-  $content->addChild('img', "./Core/Images/loading.gif");
+  
+  $content->addChild('subheading', "Waiting for an Opponent");
+  
+  $image = $content->addChild('img', '');
+  $image->addAttribute('src', './Core/Images/loading.gif');
+  
+  $queue = addButton($queue, 'home', 'blue', 'Return Home', 'home()');
   
   addMessage($content, $msg);
   
-  //Header('Content-type: text/xml');
-  return $queue;
+  Header('Content-type: text/xml');
+  return $queue->asXml();
 }
 
 //----  CORE GAME XML ------------------------------------------------------------------------
@@ -37,12 +42,14 @@ returns
   xml for base game play
 */
 function coreGameXml ($state, $msg) {
-  $xml = new SimpleXMLElement('<xml/>');
+  $xml = new SimpleXMLElement('<xml></xml>');
   
   $xml->addChild('game-img', "./Core/Images/.".$state."_wrong.png");
   
   addMessage($xml, $msg);
-  return $xml;
+  
+  Header('Content-type: text/xml');
+  return $xml->asXml();
 }
 
 /*
@@ -79,6 +86,8 @@ function guessXml ($xml, $word, $guessed, $maker){
       $letterBox->addAttribute('class', 'letter');      
     }
   }
+  
+  Header('Content-type: text/xml');
   return $xml;
 }
 /*
@@ -94,7 +103,7 @@ returns
   xml for universal game over
 */
 function gamOverXml ($word, $guessed, $wins, $total, $msg) {
-  $xml = new SimpleXMLElement('<xml/>');
+  $xml = new SimpleXMLElement('<xml></xml>');
  
   $xml->addChild('final-result', $guessed);
   $xml->addChild('word', $word);
@@ -109,7 +118,9 @@ function gamOverXml ($word, $guessed, $wins, $total, $msg) {
   $buttonSeparator = addButton($buttonSeparator, 'home', 'grey', 'Return Home', 'home()');
   
   addMessage($xml, $msg);
-  return $xml;
+  
+  Header('Content-type: text/xml');
+  return $xml->asXml();
 }
 
 //----  MAKER XML ----------------------------------------------------------------------------
@@ -133,6 +144,7 @@ function makerGenWordXml ($msg){
   $buttonSeparator = addButton($buttonSeparator, 'queue', 'red', 'Return to Queue', 'queue()');
   $buttonSeparator = addButton($buttonSeparator, 'home', 'red', 'Quit', 'home()');
   
+  Header('Content-type: text/xml');
   return $xml;
 }
 
@@ -153,6 +165,7 @@ function makerGameXml ($word, $guessed, $state, $msg) {
   
   $xml->addChild('subheader', 'The guesser is playing');
   
+  Header('Content-type: text/xml');
   return $xml;
 }
 
@@ -178,6 +191,7 @@ function guesserGenWordXml ($msg){
   $buttonSeparator = addButton($buttonSeparator, 'queue', 'red', 'Return to Queue', 'queue()');
   $buttonSeparator = addButton($buttonSeparator, 'home', 'red', 'Quit', 'home()');
   
+  Header('Content-type: text/xml');
   return $xml;
 }
 
@@ -203,6 +217,7 @@ function guesserGameXml ($word, $guessed, $state, $msg) {
   $buttonSeparator = addButton($buttonSeparator, 'queue', 'red', 'Return to Queue', 'queue()');
   $buttonSeparator = addButton($buttonSeparator, 'home', 'red', 'Quit', 'home()');
   
+  Header('Content-type: text/xml');
   return $xml;
 }
 
@@ -222,13 +237,14 @@ returns
   xml with button of the requested properties added
 */
 function addButton ($xml, $name, $color, $value, $function) {
-  $button = $xml->addChild($name, $letter);  
+  $button = $xml->addChild('button', $letter);  
   
   $button->addAttribute('class', 'standard_input false_button '.$color);
   $button->addAttribute('name', $name);
   $button->addAttribute('value', $value);
   $button->addAttribute('onclick', $function);
   
+  Header('Content-type: text/xml');
   return $xml;
 }
 
@@ -252,6 +268,7 @@ function addTextField ($xml, $name, $value) {
   $textField->addAttribute('name', $name);
   $textField->addAttribute('placeholder', $value);
   
+  Header('Content-type: text/xml');
   return $xml;
 }
 

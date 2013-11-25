@@ -24,6 +24,7 @@
   //USERS
   query("create table Users (email char(30) primary key not null, "
         ."name char(30) not null, "
+        ."in_game bool default 0, "
         ."password char(50) not null default 'pwd', "
         ."played int not null default 0, "
         ."won int not null default 0)");
@@ -37,7 +38,7 @@
         ."email_2 char(30) not null, "
         ."state int not null default 0, "
         ."guessed char(30) not null default '', "
-        ."word char(30) not null, "
+        ."word char(30) default null, "
         ."primary key (email_1, email_2))");
   
   echo 'Success</br>';

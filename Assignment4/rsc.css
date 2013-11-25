@@ -60,7 +60,10 @@ input {
 }
 
 .heading {
-  padding-bottom: 25px;
+  padding:0px;
+  margin: 0px;
+  color: #4C4C4D; 
+  font-size: 50px;     
 }
 
 .content {
@@ -209,6 +212,14 @@ input {
   width: 94%;
   color: #535151;
   border: 1px solid #CCCCCC;
+}
+
+.main_image {
+  margin: 15px;
+}
+
+.subheading {
+  margin: 15px;
 }
 
 .main_form {

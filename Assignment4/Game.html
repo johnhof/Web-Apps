@@ -4,13 +4,16 @@
 <title>Hang Man</title>
 
 <script src="http://code.jquery.com/jquery-latest.js"></script>
-<script type="text/javascript" src="./Core/Frontend/JQHelpers.js"></script>
+<script type="text/javascript" src="./Core/Frontend/AJAXHelpers.js"></script>
+<script type="text/javascript" src="./Core/Frontend/XMLHelpers.js"></script>
 <script type="text/javascript" src="./Core/Frontend/JSHelpers.js"></script>
 <script type="text/javascript" src="./Core/Frontend/GameDriver.js"></script>
 <script type="text/javascript">
 
   document.write(genericBody);
-  $(document).ready(setupInstance)
+  $(document).ready(function () {
+    setupInstance(arguments);
+  });
   
 </script>
 </html>

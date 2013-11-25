@@ -1,13 +1,13 @@
 
 
 function setupInstance () {
-  console.log(arguments);
+  getStateXml(applyXml);
   
-  //TODO: check if player is in a game
-  
-  //TODO: if in game, load appropriate state
-  
-  //TODO: if not in game, enter queued state
   
   //TODO: launch listener with appropriate callback
+}
+
+function home () {
+  //remove from queue
+  window.location = "./Home.html"
 }
