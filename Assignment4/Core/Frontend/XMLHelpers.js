@@ -19,10 +19,11 @@ function applyXml(xml) {
     , mainButton = $xml.find('button').first()
     , script     = $xml.find('script').text()
     
-  state = type;
+  userState = type;
     
-  console.log(script);
   $('#message').append(script);
+  
+  console.log(xml)
   
   // subheading
   applyElement(subHeader, 'h3', 'subheading');

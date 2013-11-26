@@ -12,8 +12,7 @@ function queuedStateReq ($email) {
   $in_game = query('SELECT in_game FROM Users WHERE email="'.$email.'"');
   
   //if we are in a game, dequeue for good measure and move to statehandler
-  if ($in_game) {
-    error_log('in game');
+  if ($in_game && $in_game[0][0]) {
     deQueue($email);
     handleStateReq($email);    
   }
@@ -24,9 +23,12 @@ function queuedStateReq ($email) {
   $iter = 0;
   
   //poll for someone to enter the queue
-  while(true){
+  while(inQueue($email)){
     //check if a player is in the queue who is not this player
-    $player = query('SELECT * FROM Queue WHERE email!="'.$email.'"');
+    $player  = query('SELECT * FROM Queue WHERE email!="'.$email.'"');
+    
+    //check if we have been placed in a game by another player
+    $in_game = query('SELECT in_game FROM Users WHERE email="'.$email.'"');
     
     //if someone is found
     if($player) {
@@ -39,6 +41,10 @@ function queuedStateReq ($email) {
       // set players to playing state
       query('UPDATE Users SET in_game=1 WHERE email="'.$email.'"');
       query('UPDATE Users SET in_game=1 WHERE email="'.$player.'"');
+      
+      handleStateReq($email);
+    }
+    else if ($in_game && $in_game[0][0]) {
       
       handleStateReq($email);
     }

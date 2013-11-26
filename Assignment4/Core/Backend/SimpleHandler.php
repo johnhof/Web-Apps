@@ -3,6 +3,11 @@ session_start();
 
 include_once './Helpers.php';
 include_once './Core.php';
+include_once './Helpers.php';
+include_once './GameHelpers.php';
+include_once './GameXML.php';
+include_once './Core.php';
+include_once './Queue.php';
 
 $req       = getValue('post', 'request');
 $forgot    = getValue('post', 'forgot');
@@ -13,6 +18,7 @@ $password  = getValue('post', 'password');
 $name      = getValue('post', 'name');
 
 $status_in = getValue('session', 'logged_In');
+$userEmail = getValue('session', 'email');
 
 
 //sanitize inputs
@@ -26,6 +32,9 @@ $password = str_replace("'", '', $password);
 //sanitize inputs
 $name = str_replace('"', '', $name);
 $name = str_replace("'", '', $name);
+
+//make sure the player is not in the queue in case the back button was hit
+deQueue($userEmail);
 
 // determine the requested page
 if ($req){
