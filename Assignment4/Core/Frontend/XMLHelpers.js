@@ -10,6 +10,7 @@ function
 */
 function applyXml(xml) {
   $('.heading').append('Hang Man');
+  $('.heading').append('Hang Man');
   $('.content').empty();
   
   var $xml       = $(xml)
@@ -19,7 +20,7 @@ function applyXml(xml) {
     , mainButton = $xml.find('button').first()
     , script     = $xml.find('script').text()
     
-  state = type;
+  userState = type;
     
   console.log(script);
   $('#message').append(script);
@@ -75,8 +76,6 @@ function
 */
 function applyElement (element, type, id) {
   if (element) {
-    console.log(element)
-    console.log(element.attributes)
     var attr = element.attributes || ''
       , html = '<' + type + ' ' + attr + ' id="' + id +'">' + element.text() + '</' + type + '>';
     $('#content').append(html);

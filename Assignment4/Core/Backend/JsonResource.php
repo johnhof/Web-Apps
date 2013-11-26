@@ -4,7 +4,7 @@ function homeJson ($array, $msg) {
   $array['heading'] = '<h1>Home</h1>';
   $array['content'] = '<h3>Select an Action</h3><br>'
                       .'<div class="main_form">'
-                        .'<a href="./Game.html"   class="standard_input false_button green">New Game</a>'
+                        .'<a href="./Game.html"   class="standard_input false_button green">Play Now</a>'
                         .'<a href="./Logout.html" class="standard_input false_button grey">Logout</a>'
                       .'</div>';
   $array['message'] = $msg;

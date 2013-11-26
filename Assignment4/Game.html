@@ -10,7 +10,8 @@
 <script type="text/javascript" src="./Core/Frontend/GameDriver.js"></script>
 <script type="text/javascript" src="./Core/Frontend/ButtonListeners.js"></script>
 <script type="text/javascript">
-
+  
+  var userState = '';
   var state = '';
   document.write(genericBody);
   
@@ -23,9 +24,8 @@
   });
   
   function onStateXmlReturn () {
-    console.log('prepping long poll')
-    listen(function (){
-      console.log('------------ response ------------')
+    listen(function (xml){
+      applyXml(xml);
     });
   }
   

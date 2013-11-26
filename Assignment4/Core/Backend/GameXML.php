@@ -102,7 +102,7 @@ params
 returns
   xml for universal game over
 */
-function gamOverXml ($word, $guessed, $wins, $total, $msg) {
+function gameOverXml ($word, $guessed, $wins, $total, $msg) {
   $xml = new SimpleXMLElement('<xml></xml>');
  
   $xml->addChild('final-result', $guessed);
@@ -138,6 +138,7 @@ function makerGenWordXml ($msg){
   $xml = coreGameXml(0, $msg);
   $xml->addChild('subheader', 'Select a word');
   
+  $content = $queue->addChild('type', 'in_game');
   $xml = addButton($xml, 'setWord', 'green', 'Submit Word', 'setWord()');
   
   $buttonSeparator = $xml->addChild('buttonSeparator');
@@ -163,6 +164,7 @@ returns
 function makerGameXml ($word, $guessed, $state, $msg) {
   $xml = guessXml(coreGameXml($state, $msg), $word, $guessed, true);
   
+  $content = $queue->addChild('type', 'in_game');
   $xml->addChild('subheader', 'The guesser is playing');
   
   Header('Content-type: text/xml');
@@ -183,6 +185,7 @@ returns
 function guesserGenWordXml ($msg){
   $xml = coreGameXml(0, $msg);
   
+  $content = $queue->addChild('type', 'in_game');
   $xml->addChild('subheader', 'Waiting for a word');
   
   $xml = addButton($xml, 'setWord', 'inactive', 'Submit Word', 'setWord()');
@@ -208,6 +211,9 @@ returns
   xml for guesser game play
 */
 function guesserGameXml ($word, $guessed, $state, $msg) {
+  $xml = coreGameXml(0, $msg);
+  
+  $content = $queue->addChild('type', 'in_game');
   $xml->addChild('subheader', (7-$state).' changes remaining');
   
   $xml = guessXml(coreGameXml($state, $msg), $word, $guessed, false);

@@ -12,28 +12,21 @@ function
 function listen (resCallback) {
   var req = {  
     type: "POST",  
-    url: "/Core/Backend/GameHandler.php",  
+    url: "./Core/Backend/GameHandler.php",  
     data: {
-      request: state
+      request: userState
     },
     dataType: "xml",
     async: true,
-    timeout: 300000,
-    success: resCallback(xml),
+    timeout: 1000,
+    success: resCallback,
     error: function (jqXHR, textStatus, errorThrown)
     {
-      if(textStatus === "timeout") { 
-        
-        console.log('Poll Timeout, executing callback');
+      setTimeout(function () {
         listen(resCallback);
-        
-      } else {
-        console.log('Unexpected Error:');
-        console.log(errorThrown);
-      }
+      }, 2000);
     }
   }
-  console.log(req)
   
   $.ajax(req);
 }
@@ -48,9 +41,7 @@ function
  executes resCallback if a value is returned
  executes timeoutcallback if the request times out
 */
-function getStateXml (callback) {
-  console.log('making request')
-  
+function getStateXml (callback) {  
   var form = { 
     request: "user_state" 
   }
@@ -67,9 +58,7 @@ function
  executes resCallback if a value is returned
  executes timeoutcallback if the request times out
 */
-function leaveQueue (callback) {
-  console.log('making request')
-  
+function leaveQueue (callback) {  
   var form = { 
     request: "deQueue" 
   }

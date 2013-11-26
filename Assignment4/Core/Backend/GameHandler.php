@@ -3,7 +3,8 @@ include_once './Helpers.php';
 include_once './GameHelpers.php';
 include_once './GameXML.php';
 include_once './Core.php';
-include_once './Queue.php';
+include_once './QueueStateUtils.php';
+include_once './GameStateUtils.php';
 include_once './DBListeners.php';
 
 $req       = getValue('post', 'request');
@@ -28,7 +29,7 @@ if ($status_in && $userEmail) {
     case 'rematch'     : handleRematchReq($userEmail, $guess);
     case 'enQueue'     : handleEnQueueReq($userEmail);
     case 'deQueue'     : handleDeQueueReq($userEmail);
-    // long polling requests
+    // polling requests
     case 'queued'      : queuedStateReq($userEmail);
     // case 'guessing'    : guessStateReq($userEmail);
     // case 'watching'    : watchStateReq($userEmail);
@@ -39,38 +40,37 @@ respond(redirectXml());
   
 function handleStateReq ($email) {
   if (!inGame($email)) {
+    error_log('not in game');
     enQueue($email);
     respond(queueXml(''));
-  }
-  respond(null);
-  // validate game
-  
+  } 
     
   //find who the guesser is
   $guesser = query('SELECT guesser FROM Games WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
     
   if (isGuesser($email)) {
+    error_log('guesser');
     if (!isWordselected()) {
+      error_log('genword');
       respond(makerGenWordXml());
     }
     else {
+      error_log('waiting');
       respond(makerGameXml());
     }
   }
   else {
+    error_log('guesser');
     if (!isWordselected()) {
+      error_log('genword');
       respond(guesserGenWordXml());
     }
     else {
+      error_log('quessing');
       respond(guesserGameXml());
     }    
-  }
-  // if the player is in game and the state is 0-6
-  //   if the player is a maker
-  //     return maker XML
-  //   if the player is a guess
-  //     return guesser XMl
-  
+  }  
+  error_log('unsatisfied request');
   
   respond($res);
 }
@@ -93,6 +93,34 @@ function handleEnQueueReq($userEmail){
 
 function handleDeQueueReq($userEmail){
   respond(deQueue($userEmail));
+}
+
+
+function queuedStateReq ($email) { 
+  //if we are in a game, dequeue for good measure and move to statehandler
+  if (inGame($email)) {
+    error_log('in game');
+    deQueue($email);
+    return handleStateReq($email);   
+  }
+  error_log('not in game');
+  
+  //move to the queue
+  enQueue($email);
+  
+  //check if a player is in the queue who is not this player
+  $player = popOther($email);
+  
+  error_log('queue pop: '.$player);
+  
+  //if someone is found
+  if($player) {
+    newGame($email, $player);
+    return handleStateReq($email);
+  }
+  
+  header("HTTP/1.0 408 Request Timeout");
+  exit;
 }
 
 ?>
