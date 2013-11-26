@@ -9,20 +9,24 @@ function
   generically applies xml
 */
 function applyXml(xml) {
-  $('.heading').append('Hang Man');
-  $('.heading').append('Hang Man');
-  $('.content').empty();
-  
   var $xml       = $(xml)
     , type       = $xml.find('type').text()
+    , state      = $xml.find('state').text()
     , subHeader  = $xml.find('subheading')
     , image      = $xml.find('img')    
     , mainButton = $xml.find('button').first()
     , script     = $xml.find('script').text()
-    
+  
+  //only load if something has changed
+  if(gameState == state && userState == type) return;
+  
+  gameState = state;
   userState = type;
     
-  console.log(script);
+  //set html
+  $('.message').empty();
+  $('.content').empty();    
+    
   $('#message').append(script);
   
   // subheading
@@ -32,6 +36,11 @@ function applyXml(xml) {
   // body image
   applyElement(image, 'img', 'main_image');
   $('#main_image').addClass('main_image');
+  
+  if(userState == 'in_game') {
+    $('#main_image').addClass('hangman');
+  }
+  
   $('#main_image').attr('src', image.attr('src'));
   
   // guesses box

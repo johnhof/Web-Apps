@@ -10,25 +10,25 @@ function
  executes timeoutcallback if the request times out
 */
 function listen (resCallback) {
-  var req = {  
-    type: "POST",  
-    url: "./Core/Backend/GameHandler.php",  
-    data: {
-      request: userState
-    },
-    dataType: "xml",
-    async: true,
-    timeout: 1000,
-    success: resCallback,
-    error: function (jqXHR, textStatus, errorThrown)
-    {
-      setTimeout(function () {
-        listen(resCallback);
-      }, 2000);
-    }
-  }
-  
-  $.ajax(req);
+  setTimeout(function () {
+    var req = {  
+      type: "POST",  
+      url: "./Core/Backend/GameHandler.php",  
+      data: {
+        request: userState
+      },
+      dataType: "xml",
+      async: true,
+      timeout: 1000,
+      success: resCallback,
+      error: function (jqXHR, textStatus, errorThrown)
+      {
+          listen(resCallback);
+      }
+    }
+    
+    $.ajax(req);
+  }, listenerWait);
 }
 
 /*

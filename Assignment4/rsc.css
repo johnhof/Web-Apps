@@ -218,6 +218,12 @@ input {
   margin: 15px;
 }
 
+.main_image.hangman {
+  margin: 15px;
+  height: 200px; 
+  width: 200px;
+}
+
 .subheading {
   margin: 15px;
 }

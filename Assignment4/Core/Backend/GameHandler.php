@@ -17,6 +17,9 @@ $userEmail = getValue('session', 'email');
 $userEmail = str_replace('"', '', $userEmail);
 $guess     = str_replace("'", '', $guess);
 $newWord   = str_replace('"', '', $newWord);
+  
+  error_log('---------------------------------------------');
+
   error_log($req);
   error_log($status_in);
 
@@ -31,8 +34,7 @@ if ($status_in && $userEmail) {
     case 'deQueue'     : handleDeQueueReq($userEmail);
     // polling requests
     case 'queued'      : queuedStateReq($userEmail);
-    // case 'guessing'    : guessStateReq($userEmail);
-    // case 'watching'    : watchStateReq($userEmail);
+    case 'in_game'     : handleStateReq($userEmail);
   }
 }
 
@@ -40,33 +42,32 @@ respond(redirectXml());
   
 function handleStateReq ($email) {
   if (!inGame($email)) {
-    error_log('not in game');
     enQueue($email);
     respond(queueXml(''));
   } 
-    
-  //find who the guesser is
-  $guesser = query('SELECT guesser FROM Games WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
+  error_log('in-game');
     
   if (isGuesser($email)) {
     error_log('guesser');
+    
     if (!isWordselected()) {
       error_log('genword');
       respond(makerGenWordXml());
     }
     else {
-      error_log('waiting');
+      error_log('guessing');
       respond(makerGameXml());
     }
   }
   else {
-    error_log('guesser');
+    error_log('maker');
+    
     if (!isWordselected()) {
       error_log('genword');
       respond(guesserGenWordXml());
     }
     else {
-      error_log('quessing');
+      error_log('waiting');
       respond(guesserGameXml());
     }    
   }  
@@ -99,19 +100,15 @@ function handleDeQueueReq($userEmail){
 function queuedStateReq ($email) { 
   //if we are in a game, dequeue for good measure and move to statehandler
   if (inGame($email)) {
-    error_log('in game');
     deQueue($email);
     return handleStateReq($email);   
   }
-  error_log('not in game');
   
   //move to the queue
   enQueue($email);
   
   //check if a player is in the queue who is not this player
   $player = popOther($email);
-  
-  error_log('queue pop: '.$player);
   
   //if someone is found
   if($player) {

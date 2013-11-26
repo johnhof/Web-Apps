@@ -16,7 +16,6 @@ $name      = getValue('post', 'name');
 $userEmail = getValue('session', 'email');
 $status_in = getValue('session', 'logged_In');
 
-
 //sanitize inputs
 $email = str_replace('"', '', $email);
 $email = str_replace("'", '', $email);
@@ -28,9 +27,6 @@ $password = str_replace("'", '', $password);
 //sanitize inputs
 $name = str_replace('"', '', $name);
 $name = str_replace("'", '', $name);
-
-//remote the player from the queue in case back was hit
-deQueue($userEmail);
 
 // determine the requested page
 if ($req){

@@ -11,11 +11,15 @@
 <script type="text/javascript" src="./Core/Frontend/ButtonListeners.js"></script>
 <script type="text/javascript">
   
-  var userState = '';
-  var state = '';
+  //------ SETUP -------
+  userState    = '';
+  state        = '';
+  listenerWait = 2000;
+  gameState    = '';
   document.write(genericBody);
   
   $(document).ready(function (res) {
+    $('.heading').append('Hand Man')
     if(!res) {
       window.location = "./Home.html";
     }
@@ -23,11 +27,18 @@
     getStateXml(applyXml);  
   });
   
+  //------ IN GAME -------
   function onStateXmlReturn () {
+    console.log('listening')
     listen(function (xml){
       applyXml(xml);
     });
   }
+  
+  //------ ON CLOSE -------
+  $(window).unload(function () {
+    leaveQueue(function(){});
+  });
   
 </script>
 </html>
