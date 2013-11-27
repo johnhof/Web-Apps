@@ -29,9 +29,12 @@
   
   //------ IN GAME -------
   function onStateXmlReturn () {
-    console.log('listening')
+    
     listen(function (xml){
+      console.log('response');
       applyXml(xml);
+      
+      onStateXmlReturn()
     });
   }
   

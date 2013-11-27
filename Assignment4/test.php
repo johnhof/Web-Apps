@@ -136,7 +136,7 @@ returns
 */
 function makerGenWordXml ($msg){
   $xml = coreGameXml(0, $msg);
-  $xml->addChild('subheader', 'Select a word');
+  $xml->addChild('subheading', 'Select a word');
   
   $xml = addButton($xml, 'setWord', 'green', 'Submit Word', 'setWord()');
   
@@ -163,7 +163,7 @@ returns
 function makerGameXml ($word, $guessed, $state, $msg) {
   $xml = guessXml(coreGameXml($state, $msg), $word, $guessed, true);
   
-  $xml->addChild('subheader', 'The guesser is playing');
+  $xml->addChild('subheading', 'The guesser is playing');
   
   Header('Content-type: text/xml');
   return $xml;
@@ -183,7 +183,7 @@ returns
 function guesserGenWordXml ($msg){
   $xml = coreGameXml(0, $msg);
   
-  $xml->addChild('subheader', 'Waiting for a word');
+  $xml->addChild('subheading', 'Waiting for a word');
   
   $xml = addButton($xml, 'setWord', 'inactive', 'Submit Word', 'setWord()');
   
@@ -208,7 +208,7 @@ returns
   xml for guesser game play
 */
 function guesserGameXml ($word, $guessed, $state, $msg) {
-  $xml->addChild('subheader', (7-$state).' changes remaining');
+  $xml->addChild('subheading', (7-$state).' changes remaining');
   
   $xml = guessXml(coreGameXml($state, $msg), $word, $guessed, false);
   $xml = addButton($xml, 'submitGuess', 'green', 'Submit Guess', 'submitGuess()');

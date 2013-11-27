@@ -32,7 +32,7 @@ function respond ($response) {
 function isGuesser ($email) {
   $guesser = query('SELECT guesser FROM Games WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
   
-  testQuery($result, 'Failed to retrieve current guesser');
+  testQuery($guesser, 'Failed to retrieve current guesser');
   
   if($guesser[0][0] == $email) return true;
   return false;
@@ -41,9 +41,9 @@ function isGuesser ($email) {
 function isWordSelected ($email) {
   $word = query('SELECT guesser FROM Games WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
   
-  testQuery($result, 'Failed to retrieve current word');
+  if($word && $word[0][0]) $word = $word[0][0];
   
-  return $word[0][0];
+  return $word;
 }
 
 

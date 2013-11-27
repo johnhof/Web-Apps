@@ -42,6 +42,9 @@ returns
   xml for base game play
 */
 function coreGameXml ($state, $msg) {
+  return coreGameXmlRaw($state, $msg)->asXml();
+}
+function coreGameXmlRaw ($state, $msg) {
   $xml = new SimpleXMLElement('<xml></xml>');
   
   $image = $xml->addChild('img', '');
@@ -53,7 +56,7 @@ function coreGameXml ($state, $msg) {
   addMessage($xml, $msg);
   
   Header('Content-type: text/xml');
-  return $xml->asXml();
+  return $xml;
 }
 
 /*
@@ -139,17 +142,16 @@ returns
   xml for maker word selection
 */
 function makerGenWordXml ($msg){
-  $xml = coreGameXml(0, $msg);
-  $xml->addChild('subheader', 'Select a word');
+  $xml = coreGameXmlRaw(0, $msg);
+  $xml->addChild('subheading', 'Select a word');
   
   $xml = addButton($xml, 'setWord', 'green', 'Submit Word', 'setWord()');
   
-  $buttonSeparator = $xml->addChild('buttonSeparator');
-  $buttonSeparator = addButton($buttonSeparator, 'queue', 'red', 'Return to Queue', 'queue()');
-  $buttonSeparator = addButton($buttonSeparator, 'home', 'red', 'Quit', 'home()');
+  $xml = addNavButtons($xml);
+  $xml = addButton($xml, 'submit', 'green', 'Submit Guess', 'submitGuess()');
   
   Header('Content-type: text/xml');
-  return $xml;
+  return $xml->asXml();
 }
 
 /*
@@ -165,12 +167,14 @@ returns
   xml for maker game play
 */
 function makerGameXml ($word, $guessed, $state, $msg) {
-  $xml = guessXml(coreGameXml($state, $msg), $word, $guessed, true);
+  $xml = guessXml(coreGameXmlRaw($state, $msg), $word, $guessed, true);
   
-  $xml->addChild('subheader', 'The guesser is playing');
+  $xml->addChild('subheading', 'The guesser is playing');
+  
+  $xml = addNavButtons($xml);
   
   Header('Content-type: text/xml');
-  return $xml;
+  return $xml->asXml();
 }
 
 //----  GUESSER XML --------------------------------------------------------------------------
@@ -185,18 +189,14 @@ returns
   xml for guesser wating for word selection
 */
 function guesserGenWordXml ($msg){
-  $xml = coreGameXml(0, $msg);
+  $xml = coreGameXmlRaw(0, $msg);
   
-  $xml->addChild('subheader', 'Waiting for a word');
+  $xml->addChild('subheading', 'Waiting for a word');
   
-  $xml = addButton($xml, 'setWord', 'inactive', 'Submit Word', 'setWord()');
-  
-  $buttonSeparator = $xml->addChild('buttonSeparator');
-  $buttonSeparator = addButton($buttonSeparator, 'queue', 'red', 'Return to Queue', 'queue()');
-  $buttonSeparator = addButton($buttonSeparator, 'home', 'red', 'Quit', 'home()');
+  $xml = addNavButtons($xml);
   
   Header('Content-type: text/xml');
-  return $xml;
+  return $xml->asXml();
 }
 
 /*
@@ -212,19 +212,17 @@ returns
   xml for guesser game play
 */
 function guesserGameXml ($word, $guessed, $state, $msg) {
-  $xml = coreGameXml(0, $msg);
+  $xml = coreGameXmlRaw(0, $msg);
   
-  $xml->addChild('subheader', (7-$state).' changes remaining');
+  $xml->addChild('subheading', (7-$state).' changes remaining');
   
-  $xml = guessXml(coreGameXml($state, $msg), $word, $guessed, false);
-  $xml = addButton($xml, 'submitGuess', 'green', 'Submit Guess', 'submitGuess()');
+  $xml = guessXml(coreGameXmlRaw($state, $msg), $word, $guessed, false);
+  $xml = addButton($xml, 'submit', 'green', 'Submit Guess', 'submitGuess()');
   
-  $buttonSeparator = $xml->addChild('buttonSeparator');
-  $buttonSeparator = addButton($buttonSeparator, 'queue', 'red', 'Return to Queue', 'queue()');
-  $buttonSeparator = addButton($buttonSeparator, 'home', 'red', 'Quit', 'home()');
+  $xml = addNavButtons($xml);
   
   Header('Content-type: text/xml');
-  return $xml;
+  return $xml->asXml();
 }
 
 //----  REDIRECT XML -------------------------------------------------------------------------
@@ -269,8 +267,16 @@ function addButton ($xml, $name, $color, $value, $function) {
   $button->addAttribute('name', $name);
   $button->addAttribute('value', $value);
   $button->addAttribute('onclick', $function);
+  $button->addAttribute('type', $type);
   
   Header('Content-type: text/xml');
+  return $xml;
+}
+
+function addNavButtons ($xml) {
+  $xml = addButton($xml, 'home', 'blue', 'Return Home', 'home()');
+  $xml = addButton($xml, 'queue', 'red', 'Return to Queue', 'queue()');
+  
   return $xml;
 }
 

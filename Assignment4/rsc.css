@@ -35,7 +35,7 @@ h3 {
   padding: 0px;
   margin: 0px;
   font: 18px;  
-  font-size: 30px; 
+  font-size: 20px; 
 }
 
 input {
@@ -145,8 +145,9 @@ input {
 }
 
 .red {
-  background-color: #9E3737;
-  color: #F2F2F2;  
+  background-image:  linear-gradient(#BE6154, #A03D61);
+  background-repeat: repeat-x;
+  border: 1px solid #6194B1;  
 }
 .green {
   background-image: linear-gradient(#8add6d, #60b044);

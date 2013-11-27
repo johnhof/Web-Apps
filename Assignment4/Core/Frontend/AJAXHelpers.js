@@ -10,8 +10,7 @@ function
  executes timeoutcallback if the request times out
 */
 function listen (resCallback) {
-  setTimeout(function () {
-    var req = {  
+  setTimeout(function () {    var req = {  
       type: "POST",  
       url: "./Core/Backend/GameHandler.php",  
       data: {
@@ -23,7 +22,7 @@ function listen (resCallback) {
       success: resCallback,
       error: function (jqXHR, textStatus, errorThrown)
       {
-          listen(resCallback);
+        listen(resCallback);
       }
     }
     
