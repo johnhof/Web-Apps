@@ -145,10 +145,10 @@ function makerGenWordXml ($msg){
   $xml = coreGameXmlRaw(0, $msg);
   $xml->addChild('subheading', 'Select a word');
   
-  $xml = addButton($xml, 'setWord', 'green', 'Submit Word', 'setWord()');
+  $xml = addButton($xml, 'submit', 'green', 'Submit Word', 'setWord()');
+  $xml = addTextField($xml, 'textField', 'Select a word');
   
   $xml = addNavButtons($xml);
-  $xml = addButton($xml, 'submit', 'green', 'Submit Guess', 'submitGuess()');
   
   Header('Content-type: text/xml');
   return $xml->asXml();
@@ -217,7 +217,8 @@ function guesserGameXml ($word, $guessed, $state, $msg) {
   $xml->addChild('subheading', (7-$state).' changes remaining');
   
   $xml = guessXml(coreGameXmlRaw($state, $msg), $word, $guessed, false);
-  $xml = addButton($xml, 'submit', 'green', 'Submit Guess', 'submitGuess()');
+  $xml = addButton($xml, 'submit', 'green', 'Submit Letter', 'submitGuess()');
+  $xml = addTextField($xml, 'textField', 'Enter a Letter');
   
   $xml = addNavButtons($xml);
   
@@ -274,8 +275,8 @@ function addButton ($xml, $name, $color, $value, $function) {
 }
 
 function addNavButtons ($xml) {
-  $xml = addButton($xml, 'home', 'blue', 'Return Home', 'home()');
-  $xml = addButton($xml, 'queue', 'red', 'Return to Queue', 'queue()');
+  $xml = addButton($xml, 'home', 'grey', 'Return Home', 'home()');
+  $xml = addButton($xml, 'resign', 'red', 'Resign', 'resign()');
   
   return $xml;
 }
@@ -312,6 +313,12 @@ function addMessage ($xml, $msg) {
     foreach ($message as $key => $text) { 
       $message->addChild($key, $text);
     }
+  }
+  else {
+    $message = $xml->addChild('message', $msg);
+    
+    $message->addChild('wins', getGamesWon());
+    $message->addChild('played', getGamesPlayed());
   }
 }
 

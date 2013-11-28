@@ -63,3 +63,57 @@ function leaveQueue (callback) {
   }
   post = $.post("./Core/Backend/GameHandler.php", form, callback, "text");
 }
+
+/*
+leaveQueue
+
+params
+  resCallback     : function (result)
+
+function
+ executes resCallback if a value is returned
+ executes timeoutcallback if the request times out
+*/
+function postResign (callback) {  
+  var form = { 
+    request: "quit" 
+  }
+  post = $.post("./Core/Backend/GameHandler.php", form, callback, "text");
+}
+
+
+/*
+postSetWord
+
+params
+  resCallback     : function (result)
+
+function
+ sets the word
+*/
+function postSetWord (word, callback) {
+  var form = { 
+    request: "set_word",
+    word   : word
+  }
+  post = $.post("./Core/Backend/GameHandler.php", form, callback, "text");
+  
+}
+
+/*
+postLetter
+
+params
+  resCallback     : function (result)
+
+function
+ submits a guess
+*/
+function postLetter (letter, callback) {
+  var form = { 
+    request: "guess_letter",
+    letter : letter
+  }
+  post = $.post("./Core/Backend/GameHandler.php", form, callback, "text");
+  
+}

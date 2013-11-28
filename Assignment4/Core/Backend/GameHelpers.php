@@ -46,5 +46,28 @@ function isWordSelected ($email) {
   return $word;
 }
 
+function setWord ($email, $word) {
+  query('UPDATE Games SET word="'.$word.'" WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
+}
 
+
+function getGamesWon() {
+  $won = query('SELECT won FROM Users WHERE email="'.getValue('session', 'email').'"');
+  return $won[0][0];
+}
+
+function getGamesPlayed() {
+  $played = query('SELECT played FROM Users WHERE email="'.getValue('session', 'email').'"');
+  return $played[0][0];
+}
+
+function getGuessed ($email) {
+  $guessed = query('SELECT guessed FROM Games WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
+  return $guessed[0][0];  
+}
+
+function getState ($email) {
+  $state = query('SELECT state FROM Games WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
+  return $state[0][0];  
+}
 ?>

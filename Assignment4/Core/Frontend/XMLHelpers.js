@@ -15,7 +15,7 @@ function applyXml(xml) {
     , subheading  = $xml.find('subheading')
     , image       = $xml.find('img')    
     , script      = $xml.find('script').text()
-    , message     = $xml.find('script').text()
+    , message     = $xml.find('message')
     
   console.log(xml)
   
@@ -31,10 +31,10 @@ function applyXml(xml) {
   $('.content').empty();    
     
   $('#message').append(script);
-  $('#message').append(message);
+  formatScore(message);
   
   // subheading
-  applyElement(subheading, 'h2', 'subheading');
+  applyElement(subheading, 'h3', 'subheading');
   $('#subheading').addClass('subheading');
   
   // body image
@@ -47,7 +47,7 @@ function applyXml(xml) {
   
   $('#main_image').attr('src', image.attr('src'));
   
-  // guesses box
+  // main image
   applyElement(image, 'img', 'main_image');
   $('#main_image').attr('class', image.attr('class'));
   $('#main_image').attr('src', image.attr('src'));
@@ -55,10 +55,13 @@ function applyXml(xml) {
   // add form
   $('#content').append('<div class="main_form"></div>')
   
+  // add text field
+  applyTextFieldTo($xml.find('textField'), '.main_form');    
+  
   // add buttons
   applyButtonTo($xml.find('button[name="submit"]'), '.main_form');    
   applyButtonTo($xml.find('button[name="home"]'), '.main_form');    
-  applyButtonTo($xml.find('button[name="queue"]'), '.main_form');    
+  applyButtonTo($xml.find('button[name="resign"]'), '.main_form');    
   
   onStateXmlReturn();
 }
@@ -86,11 +89,35 @@ function applyButtonTo (button, selector) {
   if(!button.length || button.attr('hidden') == 'true') return;
   
   var buttonId = button.attr('name')
-  applyElement(button, 'div', buttonId, selector);
+  applyTo(button, 'div', buttonId, selector);
   $('#' + buttonId).attr('class', button.attr('class'));
   $('#' + buttonId).attr('name', button.attr('name'));
   $('#' + buttonId).attr('onclick', button.attr('onclick'));
   $('#' + buttonId).append(button.attr('value'));
+}
+
+function applyTextFieldTo (field, selector) {
+  if(!field.length) return;
+  
+  var fieldId = 'textField'
+  applyTo(field, 'input', fieldId, selector);
+  $('#' + fieldId).attr('class', field.attr('class'));
+  $('#' + fieldId).attr('type', 'text');
+  $('#' + fieldId).attr('name', field.attr('name'));
+  $('#' + fieldId).attr('placeholder', field.attr('placeholder'));
+  $('#' + fieldId).append(field.attr('value'));
+}
+
+function formatScore (message) {
+  if(!message.find('wins').length) return;
+  
+  var wins = message.find('wins').text();
+  var played = message.find('played').text();
+  
+  $('#message').attr('class', 'message');
+  $('#message').append('Games Played: ' + played +'</br>');
+  $('#message').append('Games Won: ' + wins +'</br>');
+  $('#message').append('Games Lost: ' + (played-wins) +'</br>');
 }
 
 /*
@@ -118,3 +145,5 @@ function applyTo (element, type, id, selector) {
     $(selector).append(html);
   }
 }
+
+
