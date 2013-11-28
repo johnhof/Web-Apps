@@ -48,9 +48,11 @@ function handleStateReq ($email) {
   } 
   error_log('in-game');
   
+  validateGame($email);
+  
   $guessed = getGuessed($email);
   $state = getState($email);
-    
+  
   if (!isGuesser($email)) {
     error_log('maker');
     

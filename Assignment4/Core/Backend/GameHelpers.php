@@ -6,13 +6,6 @@ include_once './GameXML.php';
 include_once './Core.php';
 include_once './QueueStateUtils.php';
 
-function validateGame ($email) {
-  // if the player is marked in game and state is -1
-  //   kill game and mark a win 
-  //   place into the queue and return queue XML, with a message that the other player has quit
-}
-
-
 function testQuery ($result, $string) {
 
   if($result) return;
@@ -86,5 +79,13 @@ function processBadGuess ($email, $letter) {
 
   // increment game state
   query('UPDATE Games SET state=state+1 WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
+}
+
+function validateGame ($email){
+  $game = query('SELECT * FROM Games WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
+  if (!$game[0][0]) {
+    query('UPDATE Users SET in_game=0 WHERE email="'.$email.'"'); 
+    respond();     
+  }
 }
 ?>
