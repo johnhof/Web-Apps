@@ -93,9 +93,14 @@ function handleGuessReq ($userEmail, $letter){
   
   $letter = $letter[0];
   error_log('letter guess: '.$letter);
-  //submit guess
+  error_log('old guesses: '.getGuessed($userEmail));
+  
+  //if the guess is in the list, dont process it
+  if(oldGuess($userEmail, $letter)) respond();
+  
+  processBadGuess($userEmail, $letter); 
    
-  respond($res);
+  handleStateReq($userEmail);
 }
 
 function handleEnQueueReq ($userEmail){
@@ -107,7 +112,7 @@ function handleDeQueueReq ($userEmail){
 }
 
 function handleQuitReq ($userEmail, $guess) {  
-  if(!inGame($email)) respond(redirectXml());
+  if(!inGame($userEmail)) respond(redirectXml());
   
   finalizeGame($userEmail, false);
   

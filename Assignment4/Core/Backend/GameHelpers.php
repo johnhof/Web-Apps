@@ -70,4 +70,21 @@ function getState ($email) {
   $state = query('SELECT state FROM Games WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
   return $state[0][0];  
 }
+
+function oldGuess ($email, $letter) {
+  error_log(strpos(getGuessed($email), $letter));
+  return strpos(getGuessed($email), $letter) ? true : false;  
+}
+
+function processBadGuess ($email, $letter) {
+  $guessed = getGuessed($email);
+  
+  error_log('UPDATE Games SET guessed="'.$guessed.$letter.'" WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
+  
+  // add the quessed letter to the previous guessed list
+  query('UPDATE Games SET guessed="'.$guessed.$letter.'" WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
+
+  // increment game state
+  query('UPDATE Games SET state=state+1 WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
+}
 ?>
