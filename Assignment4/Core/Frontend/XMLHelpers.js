@@ -16,15 +16,18 @@ function applyXml(xml) {
     , image       = $xml.find('img')    
     , script      = $xml.find('script').text()
     , message     = $xml.find('message')
+    , letters     = $xml.find('letter')
+    , guessed     = $xml.find('guessed').text()
     
-  console.log(xml)
+  console.log(xml);
+  console.log(letters);
   
   //only load if something has changed
-  if(gameState == state && userState == type) return;
+  if(gameState == state && userState == type && guessCache == guessed) return;
   
-  gameState = state;
-  userState = type;
-  
+  gameState  = state;
+  userState  = type;
+  guessCache = guessed;
     
   //set html
   $('.message').empty();
@@ -37,23 +40,44 @@ function applyXml(xml) {
   applyElement(subheading, 'h3', 'subheading');
   $('#subheading').addClass('subheading');
   
-  // body image
-  applyElement(image, 'img', 'main_image');
-  $('#main_image').addClass('main_image');
-  
-  if(userState == 'in_game') {
-    $('#main_image').addClass('hangman');
+  if (image.length) {
+    // body image
+    applyElement(image, 'img', 'main_image');
+    $('#main_image').addClass('main_image');
+    
+    if(userState == 'in_game') {
+      $('#main_image').addClass('hangman');
+    }
+    
+    $('#main_image').attr('src', image.attr('src'));
+    
+    // main image
+    applyElement(image, 'img', 'main_image');
+    $('#main_image').attr('class', image.attr('class'));
+    $('#main_image').attr('src', image.attr('src'));
   }
   
-  $('#main_image').attr('src', image.attr('src'));
+  if(guessed.length) {
+    $('.content').append('</br>');
+    
+    var array = guessed.split('');
+    guessed = array[0];
+    
+    array.forEach(function(letter, index) {
+      if(index != 0) guessed = guessed + ', ' + letter;
+    });
+    
+    $('#content').append('<div class="guessed" id="guessed">Guessed: ' + guessed + '</div>');
+  }
   
-  // main image
-  applyElement(image, 'img', 'main_image');
-  $('#main_image').attr('class', image.attr('class'));
-  $('#main_image').attr('src', image.attr('src'));
+  if(letters.length) {
+    $('.content').append('</br>');
+    applyLetters(letters);
+  }
+  
   
   // add form
-  $('#content').append('<div class="main_form"></div>')
+  $('#content').append('<div class="main_form"></div>');
   
   // add text field
   applyTextFieldTo($xml.find('textField'), '.main_form');    
@@ -106,6 +130,16 @@ function applyTextFieldTo (field, selector) {
   $('#' + fieldId).attr('name', field.attr('name'));
   $('#' + fieldId).attr('placeholder', field.attr('placeholder'));
   $('#' + fieldId).append(field.attr('value'));
+}
+
+function applyLetters (letters) {
+  $('#content').append('<div id="letters" class="letters"></div>');
+  $('#letters').attr('style', 'width: ' + (60*letters.length) + 'px;')
+  
+  letters.each(function(index, letter) {    
+    $('#letters').append('<div id="letter_' + index +'" >' + letter.textContent + '</div>');
+    $('#letter_' + index).attr('class', letter.getAttribute('class'));
+  });
 }
 
 function formatScore (message) {

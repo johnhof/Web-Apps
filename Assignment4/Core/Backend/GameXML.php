@@ -47,8 +47,10 @@ function coreGameXml ($state, $msg) {
 function coreGameXmlRaw ($state, $msg) {
   $xml = new SimpleXMLElement('<xml></xml>');
   
-  $image = $xml->addChild('img', '');
-  $image->addAttribute('src', './Core/Images/'.$state.'_wrong.png');
+  if ($state != -1) {
+    $image = $xml->addChild('img', '');
+    $image->addAttribute('src', './Core/Images/'.$state.'_wrong.png');
+  }
   
   $xml->addChild('state', $state);
   $xml->addChild('type', 'in_game');
@@ -72,29 +74,29 @@ returns
   xml appended with letter cells
 */
 function guessXml ($xml, $word, $guessed, $maker){
-  foreach ($word as $index => $letter) {
+  $word = str_split($word);
+    
+  for ($i = 0; $i < sizeof($word); $i++) {
     
     // mark if this letter has been guesed
-    $found = in_array($letter, $guessed);
+    $found = (strpos($guessed, $letter) !== false);
     
     // found letters display the same for maker and guesser
-    if($found) {
-      $letterBox = $xml->addChild('letter_'.$index, $letter);  
-      $letterBox->addAttribute('class', 'letter.guessed');
+    if($found) {      
+      $letterBox = $xml->addChild('letter', $letter);  
+      $letterBox->addAttribute('class', 'letter guessed');
     }
     // let maker see non-guessed letters
     else if ($maker) {
-      $letterBox = $xml->addChild('letter_'.$index, $letter);  
-      $letterBox->addAttribute('class', 'letter.not_guessed');      
+      $letterBox = $xml->addChild('letter', $letter);  
+      $letterBox->addAttribute('class', 'letter not_guessed');      
     }
     // if its not found and a guesser, return an empty cell
     else {
-      $letterBox = $xml->addChild('letter_'.$index, ' ');
+      $letterBox = $xml->addChild('letter', ' ');
       $letterBox->addAttribute('class', 'letter');      
     }
-  }
-  
-  Header('Content-type: text/xml');
+  }  
   return $xml;
 }
 /*
@@ -141,8 +143,8 @@ params
 returns
   xml for maker word selection
 */
-function makerGenWordXml ($msg){
-  $xml = coreGameXmlRaw(0, $msg);
+function makerGenWordXml ($state, $msg){
+  $xml = coreGameXmlRaw($state, $msg);
   $xml->addChild('subheading', 'Select a word');
   
   $xml = addButton($xml, 'submit', 'green', 'Submit Word', 'setWord()');
@@ -169,7 +171,9 @@ returns
 function makerGameXml ($word, $guessed, $state, $msg) {
   $xml = guessXml(coreGameXmlRaw($state, $msg), $word, $guessed, true);
   
-  $xml->addChild('subheading', 'The guesser is playing');
+  $xml->addChild('guessed', $guessed);
+  
+  $xml->addChild('subheading', $state.' incorrect guesses');
   
   $xml = addNavButtons($xml);
   
@@ -188,9 +192,8 @@ params
 returns
   xml for guesser wating for word selection
 */
-function guesserGenWordXml ($msg){
-  $xml = coreGameXmlRaw(0, $msg);
-  
+function guesserGenWordXml ($state, $msg){
+  $xml = coreGameXmlRaw($state, $msg);
   $xml->addChild('subheading', 'Waiting for a word');
   
   $xml = addNavButtons($xml);
@@ -212,11 +215,11 @@ returns
   xml for guesser game play
 */
 function guesserGameXml ($word, $guessed, $state, $msg) {
-  $xml = coreGameXmlRaw(0, $msg);
-  
-  $xml->addChild('subheading', (7-$state).' changes remaining');
-  
   $xml = guessXml(coreGameXmlRaw($state, $msg), $word, $guessed, false);
+  $xml->addChild('subheading', $state.' incorrect guesses');
+  
+  $xml->addChild('guessed', $guessed);
+  
   $xml = addButton($xml, 'submit', 'green', 'Submit Letter', 'submitGuess()');
   $xml = addTextField($xml, 'textField', 'Enter a Letter');
   

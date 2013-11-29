@@ -17,13 +17,12 @@ $userEmail = getValue('session', 'email');
 $userEmail = str_replace('"', '', $userEmail);
 $word      = str_replace("'", '', $word);
 $letter    = str_replace("'", '', $letter);
-$newWord   = str_replace('"', '', $newWord);
-  
-  error_log('---------------------------------------------');
 
-  error_log($req);
-  error_log($status_in);
-  error_log($letter);
+$word   = explode(' ', trim($word));
+$word   = strtoupper(substr($word[0], 0, 14));
+$letter = strtoupper($letter[0]);
+
+groomDB();
 
 if ($status_in && $userEmail) {  
   switch ($req) {
@@ -46,62 +45,67 @@ function handleStateReq ($email) {
     enQueue($email);
     respond(queueXml(''));
   } 
-  error_log('in-game');
   
   validateGame($email);
   
+  $word    = getWord($email);
   $guessed = getGuessed($email);
-  $state = getState($email);
+  $state   = getState($email);
   
-  if (!isGuesser($email)) {
-    error_log('maker');
-    
-    if (!isWordselected($email)) {
-      error_log('genword');
-      respond(makerGenWordXml());
+  //if game state is 7, finalize the game, send an alert
+  if (getState($email) >= 7) {
+    finalizeGame($email, false);
+  }
+  
+  if (!isGuesser($email)) {    
+    if (!isWordSelected($email)) {
+      respond(makerGenWordXml($state));
     }
     else {
-      error_log('guessing');
-      respond(makerGameXml($word, $guesses, $state, $msg));
+      respond(makerGameXml($word, $guessed, $state, $msg));
     }
   }
-  else {
-    error_log('guesser');
-    
-    if (!isWordselected($email)) {
-      error_log('genword');
-      respond(guesserGenWordXml());
+  else {    
+    if (!isWordSelected($email)) {
+      respond(guesserGenWordXml($state));
     }
     else {
-      error_log('waiting');
-      respond(guesserGameXml($word, $guesses, $state, $msg));
+      respond(guesserGameXml($word, $guessed, $state, $msg));
     }    
   }  
-  error_log('unsatisfied request');
-  
+    
   respond($res);
 }
 
-function handleWordReq ($userEmail, $word){
-  if(!inGame($userEmail) || isGuesser($userEmail) || !$word) respond();
+function handleWordReq ($userEmail, $word) {
+  if(!inGame($userEmail) || isGuesser($userEmail) || !$word || !ctype_alpha($word)) respond();
   
   setWord($userEmail, $word);
   
   handleStateReq($email);
 }
 
-function handleGuessReq ($userEmail, $letter){
-  if(!inGame($userEmail) || !isGuesser($userEmail) || !$letter) respond();
-  
-  $letter = $letter[0];
-  error_log('letter guess: '.$letter);
-  error_log('old guesses: '.getGuessed($userEmail));
+function handleGuessReq ($userEmail, $letter) {
+  if(!inGame($userEmail) || !isGuesser($userEmail) || !$letter || !getWord($userEmail) || !ctype_alpha($letter)) respond();
   
   //if the guess is in the list, dont process it
   if(oldGuess($userEmail, $letter)) respond();
+    
+  recordGuess($userEmail, $letter);
   
-  processBadGuess($userEmail, $letter); 
-   
+  if (validGuess($userEmail, $letter)) {
+    if (testForWin($userEmail)) {
+      finalizeGame($userEmail, true);
+    }
+  }
+  else {
+    incrementState($userEmail);
+    
+    if (getState($userEmail) >= 7) {
+      finalizeGame($userEmail, false);
+    }
+  }   
+  
   handleStateReq($userEmail);
 }
 
@@ -113,7 +117,7 @@ function handleDeQueueReq ($userEmail){
   respond(deQueue($userEmail));
 }
 
-function handleQuitReq ($userEmail, $guess) {  
+function handleQuitReq ($userEmail, $guess) {    
   if(!inGame($userEmail)) respond(redirectXml());
   
   finalizeGame($userEmail, false);

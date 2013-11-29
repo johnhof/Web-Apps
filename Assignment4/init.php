@@ -39,7 +39,7 @@
         ."guesser char(30) not null, "
         ."state int not null default 0, "
         ."guessed char(30) not null default '', "
-        ."word char(30) default null, "
+        ."word char(15) default null, "
         ."primary key (email_1, email_2))");
   
   echo 'Success</br>';

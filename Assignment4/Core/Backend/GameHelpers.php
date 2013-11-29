@@ -6,6 +6,10 @@ include_once './GameXML.php';
 include_once './Core.php';
 include_once './QueueStateUtils.php';
 
+function groomDB () {  
+  query('DELETE FROM Queue WHERE email=""');  
+}
+
 function testQuery ($result, $string) {
 
   if($result) return;
@@ -25,24 +29,24 @@ function respond ($response) {
 function isGuesser ($email) {
   $guesser = query('SELECT guesser FROM Games WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
   
-  testQuery($guesser, 'Failed to retrieve current guesser');
-  
   if($guesser[0][0] == $email) return true;
   return false;
 }
 
 function isWordSelected ($email) {
-  $word = query('SELECT guesser FROM Games WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
-  
-  if($word && $word[0][0]) $word = $word[0][0];
-  
-  return $word;
+  $word = query('SELECT word FROM Games WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
+  return $word[0][0];
 }
 
 function setWord ($email, $word) {
   query('UPDATE Games SET word="'.$word.'" WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
+  query('UPDATE Games SET state=0 WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
 }
 
+function getWord ($email) {
+  $word = query('SELECT word FROM Games WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
+  return $word[0][0]; 
+}
 
 function getGamesWon() {
   $won = query('SELECT won FROM Users WHERE email="'.getValue('session', 'email').'"');
@@ -65,27 +69,30 @@ function getState ($email) {
 }
 
 function oldGuess ($email, $letter) {
-  error_log(strpos(getGuessed($email), $letter));
-  return strpos(getGuessed($email), $letter) ? true : false;  
+  return strpos(getGuessed($email), $letter) !== false ? true : false;  
 }
 
-function processBadGuess ($email, $letter) {
+function recordGuess ($email, $letter) {
   $guessed = getGuessed($email);
-  
-  error_log('UPDATE Games SET guessed="'.$guessed.$letter.'" WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
-  
-  // add the quessed letter to the previous guessed list
   query('UPDATE Games SET guessed="'.$guessed.$letter.'" WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
-
-  // increment game state
-  query('UPDATE Games SET state=state+1 WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
 }
 
-function validateGame ($email){
-  $game = query('SELECT * FROM Games WHERE email_1="'.$email.'" OR email_2="'.$email.'"');
-  if (!$game[0][0]) {
-    query('UPDATE Users SET in_game=0 WHERE email="'.$email.'"'); 
-    respond();     
+function validGuess ($email, $letter) {
+  $word = getWord($email);
+  return strpos($word, $letter) !== false ? true : false;
+}
+  
+//return true if the word was guessed
+function testForWin ($email) {
+  $guessed = getGuessed($email);
+  $word    = getWord($email);
+  
+  
+  $word = str_split($word);    
+  for ($i = 0; $i < sizeof($word); $i++) {
+    $letter = $word[$i];
+    if(strpos($guessed, $letter) === false) return false;
   }
+  return true;
 }
 ?>
